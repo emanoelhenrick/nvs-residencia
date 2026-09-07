@@ -28,10 +28,10 @@ O suporte técnico recebe em média **1.800 solicitações por mês**, vindas de
 
 ## Arquitetura Tecnológica
 
-- **Frontend —> Angular:** equipe já tem experiência prévia. O framework oferece estrutura sólida e padronizada, com TypeScript reforçando a segurança em formulários (loja, equipamento, horário, evidências).
-- **Backend —> Java com Spring Boot:** tecnologia de maior domínio da equipe. Framework maduro, com suporte nativo a APIs REST, segurança (Spring Security) e **WebSockets** para monitoramento em tempo real dos chamados (status, novos incidentes e responsáveis), útil em incidentes que afetam múltiplas lojas.
-- **Banco de Dados —> PostgreSQL:** tecnologia já dominada pela equipe. Relacional, robusto e com suporte ACID, ideal para histórico confiável e correlação de incidentes. Boa integração com AWS RDS.
-- **Autenticação —> JWT:** autenticação stateless, simplifica a escalabilidade e facilita futura expansão para outros canais.
+- **Frontend -> Angular:** equipe já tem experiência prévia. O framework oferece estrutura sólida e padronizada, com TypeScript reforçando a segurança em formulários (loja, equipamento, horário, evidências).
+- **Backend -> Java com Spring Boot:** tecnologia de maior domínio da equipe. Framework maduro, com suporte nativo a APIs REST, segurança (Spring Security) e **WebSockets** para monitoramento em tempo real dos chamados (status, novos incidentes e responsáveis), útil em incidentes que afetam múltiplas lojas.
+- **Banco de Dados -> PostgreSQL:** tecnologia já dominada pela equipe. Relacional, robusto e com suporte ACID, ideal para histórico confiável e correlação de incidentes. Boa integração com AWS RDS.
+- **Autenticação -> JWT:** autenticação stateless, simplifica a escalabilidade e facilita futura expansão para outros canais.
 - **Testes:** foco em testes unitários e de integração desde a primeira versão, garantindo confiabilidade das regras de negócio antes de evoluções futuras.
 - **Publicação:** frontend na **Vercel** (deploy simples e rápido). Backend e banco na **AWS**, pelo maior controle de infraestrutura e serviços gerenciados (RDS).
 
