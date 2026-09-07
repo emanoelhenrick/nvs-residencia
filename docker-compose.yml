@@ -1,12 +1,12 @@
 services:
   nvs-db:
-    image: bitnami/postgresql
+    image: postgres:16
     ports:
       - 5432:5432
     environment:
-      - POSTGRESQL_USERNAME=docker
-      - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=nvs-db
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=nvs-db
     networks:
       - app-network
 
