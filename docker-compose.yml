@@ -15,9 +15,9 @@ services:
     container_name: nvs_backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://nvs-db:5432/nvs-db
-
       SPRING_DATASOURCE_USERNAME: docker
       SPRING_DATASOURCE_PASSWORD: docker
+      
       JWT_SECRET: NVS_ULTIMATE_SECRET_KEY
     ports:
       - "8080:8080"
