@@ -1,4 +1,4 @@
-# Sistema de Gerenciamento de Chamados de Suporte — Nexo Varejo
+# NVS — Nexo Varejo Suporte
 
 ## Contexto
 
