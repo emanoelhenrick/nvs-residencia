@@ -1,62 +1,268 @@
-# NVS — Nexo Varejo Suporte
+# NVS - Nexo Varejo Suporte
 
-## Contexto
+Sistema de suporte técnico para centralizar chamados, histórico de atendimentos, incidentes e indicadores da operação da Nexo Varejo.
 
-A **Nexo Varejo** é uma empresa varejista com 85 lojas no Nordeste, dois centros de distribuição e uma operação de e-commerce 24h, totalizando cerca de 2.500 colaboradores.
+## Integrantes
 
-O suporte técnico recebe em média **1.800 solicitações por mês**, vindas de diferentes canais (e-mail, telefone, chat, mensagens diretas, formulários e planilhas próprias de cada área).
+| Integrante | Perfil | Responsabilidade inicial |
+| --- | --- | --- |
+| <img src="https://github.com/emanoelhenrick.png?size=64" width="48" alt="Avatar de Emanoel Henrick"> Emanoel Henrick | [GitHub](https://github.com/emanoelhenrick) | Tech Lead / Arquitetura |
+| <img src="https://github.com/RaieleLeite.png?size=64" width="48" alt="Avatar de Raiele Leite"> Raiele Leite | [GitHub](https://github.com/RaieleLeite) | Frontend e integração |
+| <img src="https://github.com/alancodex.png?size=64" width="48" alt="Avatar de Alan Vitor"> Alan Vitor | [GitHub](https://github.com/alancodex) | QA, DevOps e Qualidade |
+| <img src="https://github.com/jenniferzeferino.png?size=64" width="48" alt="Avatar de Jennifer Zeferino"> Jennifer Zeferino | [GitHub](https://github.com/jenniferzeferino) | Líder / Product & Delivery Lead |
+| <img src="https://github.com/Lucas-Viniicius.png?size=64" width="48" alt="Avatar de Lucas Vinicius"> Lucas Vinicius | [GitHub](https://github.com/Lucas-Viniicius) | Full-stack / Apoio Técnico |
+| <img src="https://github.com/Samara020.png?size=64" width="48" alt="Avatar de Samara Mendonça"> Samara Mendonça | [GitHub](https://github.com/Samara020) | UX/UI e Requisitos |
+| <img src="https://github.com/RayssaRR.png?size=64" width="48" alt="Avatar de Rayssa Santana"> Rayssa Santana | [GitHub](https://github.com/RayssaRR) | Backend e Banco de Dados |
 
-## Problemas atuais
+## Stack escolhida
 
-- Não existe uma **base central** com o histórico dos atendimentos.
-- Gerentes de loja preferem falar diretamente com analistas conhecidos, por acreditarem ser mais rápido do que o canal oficial — isso faz com que o trabalho não seja registrado nem contabilizado.
-- Solicitações chegam **sem informações essenciais** (loja, equipamento, horário, evidências do erro).
-- Em incidentes com múltiplas lojas afetadas pela mesma causa, a falta de correlação entre chamados gera **retrabalho e demora no diagnóstico**.
-- Diferentes áreas apresentam **números incompatíveis** sobre quantidade de incidentes, tempo de indisponibilidade e impacto financeiro.
-- Chamados ficam sem responsável definido, ou são encerrados informalmente sem registro adequado.
+| Camada | Tecnologia | Versão inicial |
+| --- | --- | --- |
+| Frontend | Angular | 20.3.x |
+| Linguagem frontend | TypeScript | 5.9.x |
+| Runtime frontend | Node.js | 22.x |
+| Backend | Java + Spring Boot | Java 25 / Spring Boot 4.1.1 |
+| Build backend | Gradle Wrapper | 9.7.1 |
+| Banco de dados | PostgreSQL | 16 |
+| Autenticação | JWT, stateless | A implementar |
+| Testes | JUnit/Spring Test e Jasmine/Karma | Conforme os projetos |
+| Publicação inicial | Vercel para frontend; AWS para backend e PostgreSQL/RDS | Planejada |
 
-## Objetivos do sistema
+### Justificativa
 
-1. **Centralizar** o registro e o histórico de todas as solicitações, independentemente da origem (loja, e-commerce, centro de distribuição).
-2. **Padronizar as informações** coletadas em cada chamado (unidade, sistema/equipamento envolvido, horário, descrição, evidências).
-3. **Correlacionar incidentes** relacionados, evitando que múltiplos times investiguem separadamente a mesma causa-raiz.
-4. **Dar visibilidade à liderança** sobre indisponibilidade, impacto nas vendas, tempo de atendimento e desempenho das equipes.
-5. **Definir responsáveis** claros por chamado, incluindo o repasse correto para fornecedores externos apenas quando cabível.
-6. Manter o registro **rápido e simples** para quem abre o chamado (vendedores, gerentes de loja), evitando o retorno ao contato informal por telefone ou mensagem.
-7. **Integrações** com sistemas de monitoramento e comunicação.
-8. **Classificação automática** de chamados via inteligência artificial.
+Angular e Spring Boot foram escolhidos porque são tecnologias já conhecidas pela equipe, reduzem o tempo de entrada e oferecem padrões maduros para manutenção. PostgreSQL atende ao histórico transacional e à correlação de incidentes com consistência ACID. JWT permite autenticação stateless e escala horizontal, mas exige proteção do segredo, expiração e rotação de tokens. A principal atenção inicial é manter Java, Spring Boot, Node e Angular em versões compatíveis e evitar que segredos sejam versionados.
 
-## Arquitetura Tecnológica
+## Pré-requisitos
 
-- **Frontend - Angular:** equipe já tem experiência prévia. O framework oferece estrutura sólida e padronizada, com TypeScript reforçando a segurança em formulários (loja, equipamento, horário, evidências).
-- **Backend - Java com Spring Boot:** tecnologia de maior domínio da equipe. Framework maduro, com suporte nativo a APIs REST, segurança (Spring Security) e **WebSockets** para monitoramento em tempo real dos chamados (status, novos incidentes e responsáveis), útil em incidentes que afetam múltiplas lojas.
-- **Banco de Dados - PostgreSQL:** tecnologia já dominada pela equipe. Relacional, robusto e com suporte ACID, ideal para histórico confiável e correlação de incidentes. Boa integração com AWS RDS.
-- **Autenticação - JWT:** autenticação stateless, simplifica a escalabilidade e facilita futura expansão para outros canais.
-- **Testes:** foco em testes unitários e de integração desde a primeira versão, garantindo confiabilidade das regras de negócio antes de evoluções futuras.
-- **Publicação:** frontend na **Vercel** (deploy simples e rápido). Backend e banco na **AWS**, pelo maior controle de infraestrutura e serviços gerenciados (RDS).
+- Git.
+- Docker Engine e Docker Compose.
+- Java 25 para executar o backend fora do container.
+- Node.js 22 e npm para executar o frontend fora do container.
+- Acesso à internet na primeira execução para baixar dependências e imagens.
 
-## Convenções de Desenvolvimento
+## Configuração do ambiente
 
-**Branches**
-- `main` → produção
-- `develop` → integração
-- `feature/nome-da-tarefa` → novas funcionalidades
-- `fix/nome-do-bug` → correções
-- `hotfix/nome` → correções urgentes em produção
+1. Clone o repositório e entre na pasta:
 
-**Commits** (padrão [Conventional Commits](https://www.conventionalcommits.org/))
-- `feat:` nova funcionalidade
-- `fix:` correção de bug
-- `docs:` documentação
-- `refactor:` refatoração sem mudança de comportamento
-- `test:` inclusão ou ajuste de testes
-- `chore:` tarefas de manutenção (configs, dependências)
+   ```bash
+   git clone https://github.com/emanoelhenrick/nvs-residencia.git
+   cd nvs-residencia
+   ```
 
-Exemplo: `feat: adiciona correlação automática de chamados por unidade`
+2. Crie o arquivo local de ambiente:
 
-**Pull Requests**
-- Título objetivo e no mesmo padrão dos commits (ex: `feat: tela de abertura de chamado`)
-- Descrição breve do que foi feito e por quê
-- Vincular à issue/tarefa relacionada, quando existir
-- Exigir ao menos 1 revisão (code review) antes do merge
-- Só realizar merge com os testes passando (CI verde)
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Altere `POSTGRES_PASSWORD` e `JWT_SECRET` no `.env`. O arquivo `.env` é ignorado pelo Git e nunca deve conter valores reais em commits.
+
+### Variáveis de ambiente
+
+| Variável | Uso | Exemplo seguro de desenvolvimento |
+| --- | --- | --- |
+| `POSTGRES_USER` | Usuário do PostgreSQL | `docker` |
+| `POSTGRES_PASSWORD` | Senha local do PostgreSQL | `change-me` |
+| `POSTGRES_DB` | Nome do banco | `nvs-db` |
+| `POSTGRES_PORT` | Porta local do PostgreSQL | `5432` |
+| `SPRING_DATASOURCE_URL` | URL JDBC usada pelo backend | `jdbc:postgresql://nvs-db:5432/nvs-db` |
+| `SPRING_DATASOURCE_USERNAME` | Usuário JDBC | `docker` |
+| `SPRING_DATASOURCE_PASSWORD` | Senha JDBC | `change-me` |
+| `JWT_SECRET` | Segredo para assinatura de tokens | `replace-with-a-long-random-value` |
+| `SERVER_PORT` | Porta HTTP do backend | `8080` |
+
+## Execução local
+
+### Com Docker Compose
+
+Suba banco, backend e frontend:
+
+```bash
+docker compose up --build
+```
+
+Acesse:
+
+- Frontend: http://localhost:4200
+- Backend: http://localhost:8080
+- Saúde da API: http://localhost:8080/health
+- PostgreSQL: `localhost:5432`
+
+Para parar os serviços:
+
+```bash
+docker compose down
+```
+
+### Sem container para as aplicações
+
+Suba apenas o banco:
+
+```bash
+docker compose up -d nvs-db
+```
+
+Em um terminal, execute o backend:
+
+```bash
+cd backend
+./gradlew bootRun
+```
+
+Em outro terminal, instale e execute o frontend:
+
+```bash
+cd frontend
+npm ci
+npm start
+```
+
+## Testes e builds
+
+Backend:
+
+```bash
+cd backend
+./gradlew test
+./gradlew build
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm ci
+npm test -- --watch=false --browsers=ChromeHeadless
+npm run build
+```
+
+O endpoint `GET /health` retorna `{ "status": "UP" }` sem autenticação para permitir monitoramento básico. Os demais endpoints devem exigir autenticação quando forem implementados.
+
+## Estrutura do repositório
+
+A estrutura abaixo representa uma organização futura para o desenvolvimento. Ela ainda será construída conforme os módulos do sistema forem implementados.
+
+```text
+backend/src/
+├── main/
+│   ├── java/com/nvs/ams/
+│   │   ├── AmsApplication.java
+│   │   ├── config/
+│   │   │   ├── SecurityConfig.java
+│   │   │   └── OpenApiConfig.java
+│   │   ├── shared/
+│   │   │   ├── exception/
+│   │   │   ├── validation/
+│   │   │   └── util/
+│   │   ├── domain/
+│   │   │   ├── model/
+│   │   │   │   ├── ticket/
+│   │   │   │   ├── incident/
+│   │   │   │   └── user/
+│   │   │   └── service/
+│   │   ├── application/
+│   │   │   ├── dto/
+│   │   │   └── service/
+│   │   ├── presentation/
+│   │   │   └── controller/
+│   │   └── infra/
+│   │       └── repository/
+│   └── resources/
+│       ├── application.properties
+│       └── db/migration/
+└── test/
+   └── java/com/nvs/ams/
+      ├── domain/
+      ├── application/
+      ├── presentation/
+      └── infra/
+
+frontend/src/
+├── main.ts
+├── index.html
+├── styles.scss
+└── app/
+   ├── core/
+   │   ├── guards/
+   │   ├── interceptors/
+   │   ├── services/
+   │   └── models/
+   ├── shared/
+   │   ├── components/
+   │   ├── directives/
+   │   ├── pipes/
+   │   └── models/
+   ├── layout/
+   │   ├── components/
+   │   └── layout.routes.ts
+   ├── features/
+   │   ├── auth/
+   │   │   ├── pages/
+   │   │   ├── components/
+   │   │   ├── services/
+   │   │   └── models/
+   │   ├── tickets/
+   │   │   ├── pages/
+   │   │   ├── components/
+   │   │   ├── services/
+   │   │   └── models/
+   │   ├── incidents/
+   │   └── dashboard/
+   ├── app.config.ts
+   ├── app.routes.ts
+   └── app.spec.ts
+```
+
+### Backend
+
+O backend será organizado por responsabilidades. `domain/` concentra os modelos, as entidades JPA, as regras e os serviços do domínio. `application/` coordena os casos de uso, DTOs e serviços de aplicação. `presentation/controller/` recebe as requisições HTTP e expõe os endpoints da API. `infra/repository/` concentra os repositórios Spring Data JPA e o acesso ao banco.
+
+Essa é uma abordagem pragmática inspirada em DDD e arquitetura hexagonal: o domínio continua separado por responsabilidade, enquanto a persistência fica isolada em `infra/`. Como os models serão codificados diretamente como entidades JPA, não haverá uma camada separada de `persistence/entity` nem mappers entre modelos de domínio e banco nesta etapa.
+
+### Frontend
+
+O frontend será organizado por funcionalidades em `features/`, com páginas, componentes, serviços e modelos próximos de cada fluxo. `core/` conterá serviços globais, guards e interceptors usados pela aplicação inteira. `shared/` ficará reservado para componentes, pipes e diretivas reutilizáveis, sem regras específicas de uma funcionalidade. `layout/` concentrará a estrutura visual e a navegação principal.
+
+## Convenções de desenvolvimento
+
+### Branches
+
+- `main`: produção.
+- `develop`: integração.
+- `feature/nome-da-tarefa`: novas funcionalidades.
+- `fix/nome-do-bug`: correções.
+- `hotfix/nome`: correções urgentes em produção.
+
+### Commits
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` nova funcionalidade.
+- `fix:` correção de bug.
+- `docs:` documentação.
+- `refactor:` refatoração sem mudança de comportamento.
+- `test:` inclusão ou ajuste de testes.
+- `chore:` manutenção e configurações.
+
+Exemplo: `feat: adiciona correlação automática de chamados por unidade`.
+
+### Pull Requests
+
+Toda alteração deve partir de `develop`, usar o template em `.github/PULL_REQUEST_TEMPLATE.md`, informar como foi validada e receber pelo menos uma revisão antes do merge. O CI precisa estar verde.
+
+Os responsáveis por aprovar Pull Requests são [Emanoel Henrick](https://github.com/emanoelhenrick) e [Raiele Leite](https://github.com/RaieleLeite). Pelo menos uma dessas pessoas deve revisar cada PR.
+
+## Publicação inicial
+
+- Frontend: Vercel, conectado ao repositório e ao branch de produção.
+- Backend: AWS, preferencialmente em serviço gerenciado ou containerizado.
+- Banco: PostgreSQL em AWS RDS, com backups, credenciais em secret manager e acesso restrito à rede do backend.
+- Segredos de produção: nunca usar `.env` versionado; configurar no provedor de deploy.
+
+## Estado atual
+
+A estrutura inicial executável inclui frontend Angular, backend Spring Boot, PostgreSQL local via Docker Compose, endpoint `/health`, testes básicos e pipeline de build/testes. Autenticação JWT, domínio de chamados, integrações e classificação por IA permanecem como próximas entregas.
+
+## Pull Request de referência
+
+A criar no GitHub a partir da branch `develop`, com revisão de outro integrante da equipe antes do merge.

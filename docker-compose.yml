@@ -2,37 +2,48 @@ services:
   nvs-db:
     image: postgres:16
     ports:
-      - 5432:5432
+      - "${POSTGRES_PORT:-5432}:5432"
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=nvs-db
+      POSTGRES_USER: ${POSTGRES_USER:-docker}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-nvs-db}
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-docker} -d ${POSTGRES_DB:-nvs-db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: ./backend
     container_name: nvs_backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://nvs-db:5432/nvs-db
-      SPRING_DATASOURCE_USERNAME: docker
-      SPRING_DATASOURCE_PASSWORD: docker
-      
-      JWT_SECRET: NVS_ULTIMATE_SECRET_KEY
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://nvs-db:5432/nvs-db}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-docker}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-change-me}
+      JWT_SECRET: ${JWT_SECRET:-local-development-only-change-me}
     ports:
       - "8080:8080"
     depends_on:
-      - nvs-db
+      nvs-db:
+        condition: service_healthy
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build: ./frontend
     container_name: nvs_frontend
     ports:
-      - "4200:4200"
+      - "4200:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - app-network
 
