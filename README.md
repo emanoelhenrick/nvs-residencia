@@ -5,14 +5,14 @@ Sistema de suporte técnico para centralizar chamados, histórico de atendimento
 ## Integrantes
 
 | Integrante | Perfil | Responsabilidade inicial |
-| --- | --- | --- |
-| <img src="https://github.com/emanoelhenrick.png?size=64" width="48" alt="Avatar de Emanoel Henrick"> Emanoel Henrick | [GitHub](https://github.com/emanoelhenrick) | Tech Lead / Arquitetura |
-| <img src="https://github.com/RaieleLeite.png?size=64" width="48" alt="Avatar de Raiele Leite"> Raiele Leite | [GitHub](https://github.com/RaieleLeite) | Frontend e integração |
-| <img src="https://github.com/alancodex.png?size=64" width="48" alt="Avatar de Alan Vitor"> Alan Vitor | [GitHub](https://github.com/alancodex) | QA, DevOps e Qualidade |
-| <img src="https://github.com/jenniferzeferino.png?size=64" width="48" alt="Avatar de Jennifer Zeferino"> Jennifer Zeferino | [GitHub](https://github.com/jenniferzeferino) | Líder / Product & Delivery Lead |
-| <img src="https://github.com/Lucas-Viniicius.png?size=64" width="48" alt="Avatar de Lucas Vinicius"> Lucas Vinicius | [GitHub](https://github.com/Lucas-Viniicius) | Full-stack / Apoio Técnico |
-| <img src="https://github.com/Samara020.png?size=64" width="48" alt="Avatar de Samara Mendonça"> Samara Mendonça | [GitHub](https://github.com/Samara020) | UX/UI e Requisitos |
-| <img src="https://github.com/RayssaRR.png?size=64" width="48" alt="Avatar de Rayssa Santana"> Rayssa Santana | [GitHub](https://github.com/RayssaRR) | Backend e Banco de Dados |
+| :---: | :---: | :--- |
+| <img src="https://github.com/emanoelhenrick.png?size=64" width="64" alt="Avatar de Emanoel Henrick"><br>**Emanoel Henrick** | [GitHub](https://github.com/emanoelhenrick) | Tech Lead / Arquitetura |
+| <img src="https://github.com/RaieleLeite.png?size=64" width="64" alt="Avatar de Raiele Leite"><br>**Raiele Leite** | [GitHub](https://github.com/RaieleLeite) | Frontend e integração |
+| <img src="https://github.com/alancodex.png?size=64" width="64" alt="Avatar de Alan Vitor"><br>**Alan Vitor** | [GitHub](https://github.com/alancodex) | QA, DevOps e Qualidade |
+| <img src="https://github.com/jenniferzeferino.png?size=64" width="64" alt="Avatar de Jennifer Zeferino"><br>**Jennifer Zeferino** | [GitHub](https://github.com/jenniferzeferino) | Líder / Product & Delivery Lead |
+| <img src="https://github.com/Lucas-Viniicius.png?size=64" width="64" alt="Avatar de Lucas Vinicius"><br>**Lucas Vinicius** | [GitHub](https://github.com/Lucas-Viniicius) | Full-stack / Apoio Técnico |
+| <img src="https://github.com/Samara020.png?size=64" width="64" alt="Avatar de Samara Mendonça"><br>**Samara Mendonça** | [GitHub](https://github.com/Samara020) | UX/UI e Requisitos |
+| <img src="https://github.com/RayssaRR.png?size=64" width="64" alt="Avatar de Rayssa Santana"><br>**Rayssa Santana** | [GitHub](https://github.com/RayssaRR) | Backend e Banco de Dados |
 
 ## Stack escolhida
 
