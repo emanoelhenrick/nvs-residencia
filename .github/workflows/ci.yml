@@ -33,9 +33,7 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
+      - uses: browser-actions/setup-chrome@v1
       - run: npm ci
-      - run: sudo apt-get update && sudo apt-get install -y chromium
       - run: npm test -- --watch=false --browsers=ChromeHeadless
-        env:
-          CHROME_BIN: /usr/bin/chromium
       - run: npm run build
