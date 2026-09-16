@@ -151,7 +151,6 @@ backend/src/
 │   │   │   ├── SecurityConfig.java
 │   │   │   └── OpenApiConfig.java
 │   │   ├── shared/
-│   │   │   ├── exception/
 │   │   │   ├── validation/
 │   │   │   └── util/
 │   │   ├── domain/
@@ -159,6 +158,7 @@ backend/src/
 │   │   │   │   ├── ticket/
 │   │   │   │   ├── incident/
 │   │   │   │   └── user/
+│   │   │   ├── exception/
 │   │   │   └── service/
 │   │   ├── application/
 │   │   │   ├── dto/
@@ -212,16 +212,6 @@ frontend/src/
    ├── app.routes.ts
    └── app.spec.ts
 ```
-
-### Backend
-
-O backend será organizado por responsabilidades. `domain/` concentra os modelos, as entidades JPA, as regras e os serviços do domínio. `application/` coordena os casos de uso, DTOs e serviços de aplicação. `presentation/controller/` recebe as requisições HTTP e expõe os endpoints da API. `infra/repository/` concentra os repositórios Spring Data JPA e o acesso ao banco.
-
-Essa é uma abordagem pragmática inspirada em DDD e arquitetura hexagonal: o domínio continua separado por responsabilidade, enquanto a persistência fica isolada em `infra/`. Como os models serão codificados diretamente como entidades JPA, não haverá uma camada separada de `persistence/entity` nem mappers entre modelos de domínio e banco nesta etapa.
-
-### Frontend
-
-O frontend será organizado por funcionalidades em `features/`, com páginas, componentes, serviços e modelos próximos de cada fluxo. `core/` conterá serviços globais, guards e interceptors usados pela aplicação inteira. `shared/` ficará reservado para componentes, pipes e diretivas reutilizáveis, sem regras específicas de uma funcionalidade. `layout/` concentrará a estrutura visual e a navegação principal.
 
 ## Convenções de desenvolvimento
 
