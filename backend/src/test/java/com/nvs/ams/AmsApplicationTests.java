@@ -21,7 +21,7 @@ class AmsApplicationTests {
 	void healthEndpointReturnsUp() throws Exception {
 		mockMvc.perform(get("/health"))
 				.andExpect(status().isOk())
-				.andExpect(content().json("{\"status\":\"UP\"}"));
+				.andExpect(content().json("{\"status\":\"ONLINE\"}"));
 	}
 
 }
