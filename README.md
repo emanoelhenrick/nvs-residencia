@@ -193,7 +193,7 @@ npm test -- --watch=false --browsers=ChromeHeadless
 npm run build
 ```
 
-O endpoint `GET /health` retorna `{ "status": "UP" }` sem autenticação para permitir monitoramento básico. Os demais endpoints devem exigir autenticação quando forem implementados.
+O endpoint `GET /health` retorna `{ "status": "ONLINE" }` sem autenticação para permitir monitoramento básico. Os demais endpoints devem exigir autenticação quando forem implementados.
 
 ## Estrutura do repositório
 
