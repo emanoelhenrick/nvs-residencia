@@ -19,9 +19,9 @@ services:
     build: ./backend
     container_name: nvs_backend
     environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://nvs-db:5432/nvs-db}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-docker}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-change-me}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://nvs-db:5432/nvs-db
+      SPRING_DATASOURCE_USERNAME: docker
+      SPRING_DATASOURCE_PASSWORD: change-me
       JWT_SECRET: ${JWT_SECRET:-local-development-only-change-me}
     ports:
       - "8080:8080"

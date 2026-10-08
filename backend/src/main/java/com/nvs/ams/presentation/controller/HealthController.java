@@ -1,4 +1,4 @@
-package com.nvs.ams;
+package com.nvs.ams.presentation.controller;
 
 import java.util.Map;
 
