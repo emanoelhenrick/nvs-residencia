@@ -78,7 +78,7 @@ Sistema de suporte técnico para centralizar chamados, histórico de atendimento
 | Frontend | Angular | 20.3.x |
 | Linguagem frontend | TypeScript | 5.9.x |
 | Runtime frontend | Node.js | 22.x |
-| Backend | Java + Spring Boot | Java 25 / Spring Boot 4.1.1 |
+| Backend | Java + Spring Boot | Java 21 / Spring Boot 4.1.1 |
 | Build backend | Gradle Wrapper | 9.7.1 |
 | Banco de dados | PostgreSQL | 16 |
 | Autenticação | JWT, stateless | A implementar |
