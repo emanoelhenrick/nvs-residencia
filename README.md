@@ -93,7 +93,7 @@ Angular e Spring Boot foram escolhidos porque são tecnologias já conhecidas pe
 
 - Git.
 - Docker Engine e Docker Compose.
-- Java 25 para executar o backend fora do container.
+- Java 21 para executar o backend fora do container.
 - Node.js 22 e npm para executar o frontend fora do container.
 - Acesso à internet na primeira execução para baixar dependências e imagens.
 
