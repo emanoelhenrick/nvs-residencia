@@ -1,4 +1,4 @@
-package com.nvs.ams;
+package com.nvs.ams.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +10,10 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(authorize -> authorize
-				.requestMatchers("/health").permitAll()
-				.anyRequest().authenticated());
+		http
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(authorize -> authorize
+					.anyRequest().permitAll());
 		return http.build();
 	}
 }
