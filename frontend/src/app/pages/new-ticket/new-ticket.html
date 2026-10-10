@@ -1,0 +1,155 @@
+<main class="page-container">
+  <header class="page-header">
+    <h1>Abrir chamado</h1>
+    <p class="subtitle">
+      Registre o problema e suas evidências. Os campos obrigatórios estão marcados com *.
+    </p>
+  </header>
+
+  <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+    <section class="card context-card">
+      <div class="card-header">
+        <h2>Informações gerais</h2>
+        <span class="badge-info">Somente leitura · informações capturadas automaticamente</span>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="requester">Solicitante e ID</label>
+          <div class="input-icon-wrapper disabled">
+            <input id="requester" type="text" formControlName="requester" readonly />
+            <mat-icon class="lock-icon">lock</mat-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="unit">Unidade / ID e dispositivo</label>
+          <div class="input-icon-wrapper disabled">
+            <input id="unit" type="text" formControlName="unit" readonly />
+            <mat-icon class="lock-icon">lock</mat-icon>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="main-grid">
+      <section class="card form-column">
+        <h2>Informações do problema</h2>
+
+        <div class="form-group">
+          <label for="category">Categoria*</label>
+          <div class="select-wrapper">
+            <select id="category" formControlName="category">
+              <option value="pdv">PDV / Terminal de venda</option>
+              <option value="pagamento">Pagamento</option>
+              <option value="sistema">Sistema</option>
+              <option value="rede">Rede / Conectividade</option>
+              <option value="hardware">Hardware</option>
+              <option value="outros">Outros</option>
+            </select>
+            <mat-icon class="select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="summary">Resumo</label>
+          <input
+            id="summary"
+            type="text"
+            formControlName="summary"
+            placeholder="Digite o resumo do problema"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descrição do problema *</label>
+          <textarea
+            id="description"
+            rows="4"
+            formControlName="description"
+            placeholder="Digite a descrição do problema"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="impact">Impacto observado *</label>
+          <textarea
+            id="impact"
+            rows="3"
+            formControlName="impact"
+            placeholder="Digite o impacto do problema"
+          ></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-container">
+            <input type="checkbox" formControlName="affectOtherDevices" />
+            <span class="checkmark"></span>
+            <span class="checkbox-label">Afeta outros dispositivos</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="errorCode">Código de erro *</label>
+          <input
+            id="errorCode"
+            type="text"
+            formControlName="errorCode"
+            placeholder="Digite o código de erro"
+          />
+        </div>
+      </section>
+
+      <aside class="sidebar-column">
+        <section class="card evidence-card">
+          <h2>Evidência</h2>
+          <p class="card-description">
+            Adicione uma evidência da operação afetada no terminal. Não inclua dados de clientes.
+          </p>
+
+          @if (attachedFile) {
+          <div class="file-box">
+            <div class="file-info">
+              <mat-icon class="file-icon">attach_file</mat-icon>
+              <div class="file-text">
+                <span class="file-name">{{ attachedFile.name }}</span>
+                <span class="file-meta"
+                  >{{ attachedFile.size }} - {{ attachedFile.description }}</span
+                >
+              </div>
+            </div>
+            <button type="button" class="btn-outline-danger" (click)="removeFile()">
+              Remover arquivo
+            </button>
+          </div>
+          } @else {
+          <div class="file-upload-placeholder">
+            <input type="file" #fileInput (change)="onFileSelect($event)" hidden />
+            <button type="button" class="btn-outline" (click)="fileInput.click()">
+              <mat-icon>upload_file</mat-icon> Anexar arquivo
+            </button>
+          </div>
+          }
+        </section>
+
+        <section class="card info-card">
+          <h2>Classificação do chamado</h2>
+          <p class="card-description">
+            A prioridade não pode ser escolhida livremente. A triagem avalia impacto, severidade e
+            urgência.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="page-footer">
+      <span class="footer-note">Confira o contexto e as evidências antes de enviar.</span>
+      <div class="footer-buttons">
+        <button type="button" class="btn-outline" (click)="onBack()">Voltar</button>
+        <button type="submit" class="btn-primary" [disabled]="ticketForm.invalid">
+          Registrar chamado
+        </button>
+      </div>
+    </footer>
+  </form>
+</main>

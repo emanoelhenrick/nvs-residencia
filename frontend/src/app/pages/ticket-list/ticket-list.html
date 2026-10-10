@@ -1,0 +1,139 @@
+<div class="page-container">
+  <header class="page-header">
+    <div class="header-titles">
+      <h1>Lista de chamados</h1>
+      <p class="subtitle">
+        Acompanhe a fila e encontre registros pelo protocolo ou pela descrição.
+      </p>
+    </div>
+    <button type="button" class="btn-primary" (click)="openNewTicket()">Abrir chamado</button>
+  </header>
+
+  <section class="card filter-card">
+    <h2>Busca e filtros</h2>
+
+    <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <div class="search-group">
+        <label for="search">Buscar protocolo ou descrição</label>
+        <div class="search-input-wrapper">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            id="search"
+            type="text"
+            formControlName="search"
+            placeholder="Buscar em chamados autorizados"
+          />
+        </div>
+      </div>
+
+      <div class="filters-pills-row">
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Unidade: {{ filterForm.get('unit')?.value }}</span>
+        </div>
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Status: {{ filterForm.get('status')?.value }}</span>
+        </div>
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Prioridade: {{ filterForm.get('priority')?.value }}</span>
+        </div>
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Responsável: {{ filterForm.get('assignee')?.value }}</span>
+        </div>
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Categoria: {{ filterForm.get('category')?.value }}</span>
+        </div>
+        <div class="filter-pill">
+          <mat-icon class="pill-icon">filter_list</mat-icon>
+          <span>Período: {{ filterForm.get('period')?.value }}</span>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button type="submit" class="btn-primary-sm">Aplicar filtros</button>
+        <button type="button" class="btn-outline-purple-sm" (click)="clearFilters()">
+          Limpar filtros
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="table-section">
+    <div class="table-meta-header">
+      <h2>{{tickets.length}} chamados</h2>
+      <span class="meta-subtext">Prioridades persistidas · consulta em {{ lastUpdated }}</span>
+    </div>
+
+    <div class="select-all-row">
+      <label class="checkbox-container">
+        <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" />
+        <span class="checkbox-label">Selecionar os {{tickets.length}} chamados</span>
+      </label>
+    </div>
+
+    <div class="table-responsive">
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th class="col-check"></th>
+            <th class="col-protocol">Protocolo</th>
+            <th class="col-summary">Resumo / responsável</th>
+            <th class="col-unit">Unidade</th>
+            <th class="col-status">Status</th>
+            <th class="col-priority">Prioridade</th>
+            <th class="col-tms-situation">TMS / situação</th>
+            <th class="col-tms-solution">TMS / solução</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticket of tickets; track ticket.protocol) {
+          <tr [class.selected]="ticket.selected">
+            <td class="col-check">
+              <input
+                type="checkbox"
+                [(ngModel)]="ticket.selected"
+                (change)="toggleTicketSelection()"
+              />
+            </td>
+            <td class="col-protocol">
+              <a (click)="openTicketDetails(ticket.protocol)">{{ ticket.protocol }}</a>
+            </td>
+            <td class="col-summary">
+              <strong class="summary-title">{{ ticket.summary }}</strong>
+              <span class="summary-sub">{{ ticket.category }}</span>
+              <span class="summary-assignee">{{ ticket.assignee }}</span>
+            </td>
+            <td class="col-unit">{{ ticket.unit }}</td>
+            <td class="col-status">
+              <span class="badge" [ngClass]="ticket.statusType">{{ ticket.status }}</span>
+            </td>
+            <td class="col-priority">{{ ticket.priority }}</td>
+            <td class="col-tms-situation">{{ ticket.tmsSituation }}</td>
+            <td class="col-tms-solution">
+              <span class="tms-text">{{ ticket.tmsSolutionText }}</span>
+              @if (ticket.tmsSolutionProgress) {
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" [style.width.%]="ticket.tmsSolutionProgress"></div>
+              </div>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="pagination-footer">
+      <span class="pagination-info">1–{{tickets.length}} de {{tickets.length}} chamados</span>
+      <div class="pagination-controls">
+        <button type="button" class="btn-pagination" disabled>Anterior</button>
+        <span class="page-indicator">Página 1 de 1</span>
+        <button type="button" class="btn-pagination" disabled>Próxima</button>
+      </div>
+    </footer>
+  </section>
+</div>

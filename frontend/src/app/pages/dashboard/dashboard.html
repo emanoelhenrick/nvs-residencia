@@ -1,0 +1,115 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+    <div class="header-titles">
+      <h1>Dashboard</h1>
+      <p class="subtitle">Visão da fila autorizada · {{ lastUpdated }}</p>
+    </div>
+    <button type="button" class="btn-primary" (click)="navigateToNewTicket()">
+      Abrir chamado
+    </button>
+  </header>
+
+  <section class="kpi-grid">
+    @for (card of kpiCards; track card.title) {
+      <div class="card kpi-card">
+        <span class="kpi-title">{{ card.title }}</span>
+        <span class="kpi-value">{{ card.value }}</span>
+        <span class="kpi-subtext">{{ card.subtext }}</span>
+      </div>
+    }
+  </section>
+
+  <section class="alert-banner">
+    <div class="alert-content">
+      <div class="alert-header">
+        <mat-icon class="alert-icon">warning</mat-icon>
+        <strong>NX-2026-01841 - 80% do TMS atingido</strong>
+      </div>
+      <p class="alert-description">
+        Pagamento TEF sem retorno - Loja 015. 20% do prazo de solução restante. Revise a necessidade de escalonamento.
+      </p>
+    </div>
+    <div class="alert-actions">
+      <button type="button" class="btn-outline-purple">Revisar escalonamento</button>
+      <span class="alert-note">
+        Ação revisável, sem execução automática. Condição "sem resolução" versus "sem movimentação" pendente de validação.
+      </span>
+    </div>
+  </section>
+
+  <div class="grid-2-col">
+        <section class="card">
+      <h2>Prioridades da fila ativa</h2>
+      <p class="card-subtitle">Valores persistidos fictícios - prioridade não é severidade</p>
+      
+      <div class="priority-list">
+        @for (item of priorities; track item.label) {
+          <div class="priority-row">
+            <span class="priority-label">{{ item.label }}</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="item.percentage"></div>
+            </div>
+            <span class="priority-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Status dos 8 chamados</h2>
+      
+      <div class="status-list">
+        @for (item of statusList; track item.label) {
+          <div class="status-row">
+            <span class="badge" [ngClass]="item.type">{{ item.label }}</span>
+            <span class="status-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+  </div>
+
+  <section class="section-container">
+    <h2>Chamados que precisam de atenção</h2>
+    <p class="section-subtitle">Prioridade e SLA visíveis para orientar a próxima ação.</p>
+
+    <div class="tickets-grid">
+      @for (ticket of attentionTickets; track ticket.id) {
+        <div class="card ticket-card" (click)="openTicketDetails(ticket.id)">
+          <div class="ticket-header">
+            <span class="ticket-id">{{ ticket.id }}</span>
+            <mat-icon class="arrow-icon">chevron_right</mat-icon>
+          </div>
+          
+          <h3 class="ticket-title">{{ ticket.title }}</h3>
+          <p class="ticket-location">{{ ticket.location }}</p>
+
+          <div class="ticket-badges">
+            <span class="badge service">{{ ticket.status }}</span>
+            <span class="badge default">{{ ticket.priority }}</span>
+          </div>
+
+          <div class="ticket-footer">
+            <span class="ticket-team">{{ ticket.team }}</span>
+            <span class="ticket-sla">{{ ticket.sla }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="section-container">
+    <div class="card recent-updates-card">
+      <h2>Atualizações recentes</h2>
+      <h3 class="update-title">NX-2026-01842 · Informação recebida</h3>
+      <p class="update-text">
+        Ana Silva enviou a foto do erro às 11:05. Marina Costa retomou o atendimento; a pausa de 10:42 a 11:05 foi preservada no histórico.
+      </p>
+      <button type="button" class="btn-outline-purple" (click)="openTicketDetails('NX-2026-01842')">
+        Ver chamado
+      </button>
+    </div>
+  </section>
+
+</div>

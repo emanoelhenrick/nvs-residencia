@@ -1,0 +1,239 @@
+<main class="page-container">
+  <!-- Cabeçalho -->
+  <header class="page-header">
+    <h1>Triagem</h1>
+    <p class="subtitle">Fila N1 - Classificação e atribuição · Visão de {{ lastUpdated }}</p>
+  </header>
+
+  <form [formGroup]="triageForm">
+    <!-- Seção Superior: Lista de Fila + Formulário de Classificação -->
+    <div class="top-grid">
+      <!-- Coluna Esquerda: Fila N1 -->
+      <aside class="card queue-card">
+        <h2>Fila N1 · 3 registros PDV</h2>
+        <p class="queue-subtitle">Loja 042 · Recife · Selecionado para revisão</p>
+
+        <div class="queue-list">
+          @for (ticket of queueTickets; track ticket.id) {
+            <div
+              class="queue-item"
+              [class.selected]="ticket.selected"
+              (click)="selectTicket(ticket.id)"
+            >
+              <span class="ticket-id">{{ ticket.id }}</span>
+              <h3 class="ticket-title">{{ ticket.title }}</h3>
+
+              <div class="ticket-status-badge">
+                <span class="badge" [class.in-triage]="ticket.status === 'Em triagem'">
+                  {{ ticket.status }}
+                </span>
+              </div>
+
+              <span class="ticket-meta">{{ ticket.timestamp }} · {{ ticket.pdv }}</span>
+            </div>
+          }
+        </div>
+      </aside>
+
+      <!-- Coluna Direita: Classificar Chamado -->
+      <section class="card classify-card">
+        <div class="classify-header">
+          <h2>Classificar NX-2026-01842</h2>
+          <div class="badges-group">
+            <span class="badge badge-warning">S2 Alta</span>
+            <span class="badge badge-purple">Prioridade P2</span>
+          </div>
+        </div>
+
+        <p class="read-only-info">
+          Ana Silva - USR-02518 · Loja 042 Recife, PDV-07 - Contexto somente leitura
+        </p>
+
+        <div class="form-group">
+          <label>Impacto observado</label>
+          <p class="readonly-box">Um terminal não finaliza vendas; os demais caixas operam.</p>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="severidade">Severidade *</label>
+            <div class="select-wrapper">
+              <select id="severidade" formControlName="severidade">
+                <option value="S1 Crítica">S1 Crítica</option>
+                <option value="S2 Alta">S2 Alta</option>
+                <option value="S3 Média">S3 Média</option>
+              </select>
+              <mat-icon class="select-arrow">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prioridadePersistida">Prioridade persistida</label>
+            <div class="input-icon-wrapper disabled">
+              <input
+                id="prioridadePersistida"
+                type="text"
+                formControlName="prioridadePersistida"
+                readonly
+              />
+              <mat-icon class="lock-icon">lock</mat-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner Informativo -->
+        <div class="info-alert">
+          <mat-icon class="alert-icon">warning</mat-icon>
+          <div>
+            <strong>Matriz S x U ainda não validada</strong>
+            <p>
+              Severidade e urgência não geram um novo P nesta demonstração. P2 é um valor persistido
+              fictício; níveis de urgência pendentes de validação.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="urgenciaContexto">Urgência - contexto para avaliação *</label>
+          <textarea id="urgenciaContexto" rows="2" formControlName="urgenciaContexto"></textarea>
+        </div>
+
+        <div class="form-group radio-group">
+          <label class="radio-label">
+            <input type="radio" value="apenas_este" formControlName="escopoDispositivo" />
+            <span>Apenas este dispositivo</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" value="outros" formControlName="escopoDispositivo" />
+            <span>Outros dispositivos</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="responsavel">Atribuir responsável *</label>
+          <div class="select-wrapper">
+            <select id="responsavel" formControlName="responsavel">
+              <option value="Marina Costa - N1">Marina Costa - N1</option>
+              <option value="Rafael Melo - N2">Rafael Melo - N2</option>
+            </select>
+            <mat-icon class="select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="justificativaClassificacao"
+            >Justificativa da classificação / atribuição *</label
+          >
+          <textarea
+            id="justificativaClassificacao"
+            rows="2"
+            formControlName="justificativaClassificacao"
+          ></textarea>
+        </div>
+
+        <button type="button" class="btn-primary" (click)="onSaveTriage()">
+          Salvar triagem e atribuir
+        </button>
+      </section>
+    </div>
+
+    <!-- Seção Intermediária: Sugestão de Incidente -->
+    <section class="card incident-suggestion-card">
+      <div class="suggestion-header">
+        <span class="tag-suggestion">Sugestão · revisão humana</span>
+        <h2>Possível incidente · revisão humana</h2>
+        <p class="suggestion-text">
+          3 chamados de PDV na Loja 042 em 12 minutos: 10:20, 10:25 e 10:32.
+        </p>
+        <p class="suggestion-subtext">
+          Mesma Categoria e Unidade, em até 15min. Confira evidências; não há vínculo automático nem
+          elevação de severidade.
+        </p>
+
+        <div class="suggestion-buttons">
+          <button type="button" class="btn-primary">Revisar agrupamento</button>
+          <button type="button" class="btn-outline">Descartar com justificativa</button>
+        </div>
+      </div>
+
+      <!-- Tabela de Evidências -->
+      <div class="evidence-section">
+        <h3>Evidências dos três registros</h3>
+        <div class="evidence-list">
+          @for (item of evidenceItems; track item.id) {
+            <div class="evidence-row">
+              <span class="evidence-id">{{ item.id }}</span>
+              <span class="evidence-desc">{{ item.description }}</span>
+              <span class="evidence-meta">{{ item.timestamp }} · {{ item.store }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Inferior: Confirmação Humana e Vínculo -->
+    <div class="bottom-grid">
+      <!-- Card Esquerda: Confirmação Humana -->
+      <section class="card confirmation-card">
+        <h2>Confirmação humana necessária</h2>
+        <p class="card-desc">
+          Confirme a mesma causa somente depois de revisar todas as evidências. O incidente
+          candidato é <strong>NX-2026-01840</strong>.
+        </p>
+
+        <div class="checkbox-wrapper">
+          <label class="checkbox-container">
+            <input type="checkbox" formControlName="revisouEvidencias" />
+            <span class="checkbox-label">Revisei as evidências dos 3 registros</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Card Direita: Form de Vínculo -->
+      <section class="card link-card">
+        <h2>Confirmar vínculo ao incidente?</h2>
+        <p class="card-desc">
+          A revisão ainda não foi concluída. Complete a justificativa e confira as evidências antes
+          de confirmar. Nada foi vinculado.
+        </p>
+
+        <div class="form-group">
+          <label for="incidentePai">Incidente pai</label>
+          <div class="select-wrapper">
+            <select id="incidentePai" formControlName="incidentePai">
+              <option value="NX-2026-01840 - PDV (ilustrativo)">
+                NX-2026-01840 - PDV (ilustrativo)
+              </option>
+            </select>
+            <mat-icon class="select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="justificativaVinculo">Justificativa do vínculo *</label>
+          <textarea
+            id="justificativaVinculo"
+            rows="2"
+            formControlName="justificativaVinculo"
+            placeholder="Informe o que aconteceu"
+          ></textarea>
+        </div>
+
+        <div class="footer-actions">
+          <button type="button" class="btn-outline">Voltar</button>
+          <button
+            type="button"
+            class="btn-primary"
+            [disabled]="
+              !triageForm.get('revisouEvidencias')?.value ||
+              triageForm.get('justificativaVinculo')?.invalid
+            "
+            (click)="onConfirmLink()"
+          >
+            Confirmar vínculo
+          </button>
+        </div>
+      </section>
+    </div>
+  </form>
+</main>
