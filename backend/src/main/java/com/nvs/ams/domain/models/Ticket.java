@@ -1,6 +1,7 @@
 package com.nvs.ams.domain.models;
 
 import com.nvs.ams.domain.models.enums.TicketStatus;
+import com.nvs.ams.domain.models.enums.TicketPriority;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,6 +52,10 @@ public class Ticket {
     @Column(nullable = false, length = 30)
     private TicketStatus status = TicketStatus.OPEN;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 2)
+    private TicketPriority priority;
+
     // Preenchido pela triagem
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_team_id")
@@ -59,8 +64,16 @@ public class Ticket {
     @Column(name = "opened_at", nullable = false, updatable = false)
     private Instant openedAt;
 
+    @Column(name = "first_response_at")
+    private Instant firstResponseAt;
+
+    @Column(name = "resolved_at")
+    private Instant resolvedAt;
+
     @PrePersist
     void onCreate() {
-        this.openedAt = Instant.now();
+        if (this.openedAt == null) {
+            this.openedAt = Instant.now();
+        }
     }
 }
