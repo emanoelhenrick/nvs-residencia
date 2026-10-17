@@ -1,0 +1,196 @@
+<div class="page-container">
+  <header class="page-header">
+    <h1>Atendimento</h1>
+    <p class="subtitle">Seu chamado atribuído · {{ ticketId }} · Visão de {{ lastUpdated }}</p>
+  </header>
+
+  <section class="card ticket-main-card">
+    <div class="ticket-header-title">
+      <h2>Venda não finaliza no terminal</h2>
+      <div class="badges-group">
+        <span class="badge badge-purple">Em atendimento</span>
+        <span class="badge badge-warning">S2 Alta</span>
+        <span class="badge badge-neutral">Prioridade P2</span>
+      </div>
+    </div>
+    
+    <p class="ticket-description">
+      Ana Silva · USR-02518 · Loja 042 Recife · PDV-07 · Categoria PDV ilustrativa · Código E204. Um terminal não finaliza vendas; os demais caixas operam.
+    </p>
+
+    <span class="ticket-meta-footer">
+      Atribuído a Marina Costa · N1 em 03/10/2026 às 10:34. Contexto e prioridade somente leitura.
+    </span>
+  </section>
+
+  <div class="grid-2-col sla-row">
+    
+    <section class="card sla-card">
+      <div class="sla-header">
+        <mat-icon class="icon-purple">schedule</mat-icon>
+        <span>SLA ativo · P2</span>
+      </div>
+      <h3 class="sla-main-text">TMS · 02h 18min restantes</h3>
+      <span class="sla-subtext">TMR 30min · TMS 6h · Horário Loja-CD</span>
+    </section>
+
+    <section class="card response-card">
+      <h3>Primeira resposta registrada</h3>
+      <p class="response-text">
+        Marina Costa · 03/10/2026 às 10:34 “Assumi o diagnóstico do terminal PDV-07.”
+      </p>
+      <span class="response-subtext">14min após abertura · TMR atendido</span>
+    </section>
+
+  </div>
+
+  <div class="grid-main-layout">
+    
+    <section class="card conversation-card">
+      <h2>Conversa e evidências</h2>
+
+      <div class="timeline-list">
+        @for (log of timelineLogs; track log.date) {
+          <div class="timeline-item">
+            <span class="timeline-meta">{{ log.date }} · {{ log.author }}</span>
+            <h4 class="timeline-action">{{ log.action }}</h4>
+            <p class="timeline-details">{{ log.details }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="attachment-box">
+        <div class="attachment-info">
+          <mat-icon class="file-icon">description</mat-icon>
+          <div>
+            <strong>erro-pdv.jpg</strong>
+            <span class="file-meta">482 KB · Ana Silva · 03/10/2026 às 11:05</span>
+          </div>
+        </div>
+        <button type="button" class="btn-outline-purple btn-sm">Remover arquivo</button>
+      </div>
+
+      <form [formGroup]="commentForm" (ngSubmit)="onPublishComment()">
+        <div class="form-group">
+          <label for="commentText">Comentário de atendimento</label>
+          <textarea id="commentText" rows="3" formControlName="commentText"></textarea>
+        </div>
+
+        <div class="add-attachment-box">
+          <mat-icon class="attach-icon">attach_file</mat-icon>
+          <div class="attach-details">
+            <strong>Adicionar evidência do diagnóstico</strong>
+            <span>Selecione um arquivo para anexar</span>
+          </div>
+          <button type="button" class="btn-outline-purple btn-sm">Selecionar arquivo</button>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="commentForm.invalid">
+          Publicar comentário
+        </button>
+      </form>
+    </section>
+
+    <div class="side-widgets">
+      
+      <section class="card widget-card">
+        <h2>Registrar espera</h2>
+        
+        <form [formGroup]="waitForm" (ngSubmit)="onRegisterWait()">
+          <div class="form-group">
+            <label for="esperaState">Estado de espera *</label>
+            <div class="select-wrapper">
+              <select id="esperaState" formControlName="esperaState">
+                <option value="Aguardando Terceiro/Fornecedor">Aguardando Terceiro/Fornecedor</option>
+                <option value="Aguardando Solicitante">Aguardando Solicitante</option>
+              </select>
+              <mat-icon class="select-arrow">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="esperaMotivo">Motivo da espera *</label>
+            <textarea 
+              id="esperaMotivo" 
+              rows="3" 
+              formControlName="esperaMotivo" 
+              placeholder="Descreva a informação ou ação externa pendente">
+            </textarea>
+          </div>
+
+          <p class="widget-help-text">
+            Pausa permitida somente em Aguardando Solicitante ou Terceiro/Fornecedor. Início, motivo e fim ficam registrados; não há nova pausa ativa.
+          </p>
+
+          <button type="submit" class="btn-secondary-disabled" [disabled]="waitForm.invalid">
+            Registrar espera
+          </button>
+        </form>
+      </section>
+
+      <section class="card widget-card">
+        <h2>Revisão de escalonamento</h2>
+        <p class="widget-text">
+          Revise a necessidade e informe a justificativa. Este chamado não está no estado de 80% do TMS.
+        </p>
+        
+        <button type="button" class="btn-outline-purple full-width" (click)="onReviewEscalation()">
+          Revisar escalonamento
+        </button>
+        
+        <span class="widget-footer-note">Sem escalonamento automático; decisões são auditáveis.</span>
+      </section>
+
+    </div>
+
+  </div>
+
+  <div class="grid-2-col bottom-section">
+    
+    <section class="card resolution-info-card">
+      <h2>Antes de resolver</h2>
+      <p class="section-text">
+        Registre a solução aplicada e valide a operação com a unidade. A confirmação muda o status para Resolvido, não para Fechado.
+      </p>
+      <p class="section-subtext">
+        Solução, autor e data serão preservados. Após mais de 48h sem manifestação, haverá passagem para Fechado conforme regra RN08; instante exato e execução a validar.
+      </p>
+
+      <button type="button" class="btn-outline-purple" (click)="onCancelTicket()">
+        Cancelar com justificativa
+      </button>
+    </section>
+
+    <section class="card resolution-form-card">
+      <div class="card-title-row">
+        <h2>Resolver {{ ticketId }}</h2>
+        <mat-icon class="close-icon">close</mat-icon>
+      </div>
+
+      <p class="section-text">
+        Informe a solução aplicada. O status passará a Resolvido; autor, data e histórico serão preservados.
+      </p>
+
+      <form [formGroup]="resolveForm" (ngSubmit)="onResolveTicket()">
+        <div class="form-group">
+          <label for="solucaoAplicada">Solução aplicada *</label>
+          <textarea 
+            id="solucaoAplicada" 
+            rows="3" 
+            formControlName="solucaoAplicada" 
+            placeholder="Informe o que aconteceu">
+          </textarea>
+        </div>
+
+        <span class="author-note">Marina Costa · N1 · Registro ainda não confirmado</span>
+
+        <div class="card-actions-right">
+          <button type="button" class="btn-outline-gray">Voltar</button>
+          <button type="submit" class="btn-secondary-disabled" [disabled]="resolveForm.invalid">
+            Registrar resolução
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

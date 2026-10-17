@@ -1,5 +1,7 @@
 package com.nvs.ams;
 
+import com.nvs.ams.config.SecurityConfig;
+import com.nvs.ams.presentation.controller.HealthController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

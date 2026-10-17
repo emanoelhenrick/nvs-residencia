@@ -39,7 +39,7 @@ public class TicketEvent {
 
     // Detalhes livres (valor antigo/novo, justificativa...) em JSONB
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb", updatable = false)
+    @Column(updatable = false)
     private Map<String, Object> payload;
 
     @Column(name = "created_at", nullable = false, updatable = false)

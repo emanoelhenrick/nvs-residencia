@@ -1,0 +1,494 @@
+@use '../../../styles/_varibles' as *;
+
+.page-container {
+  padding: 1.5rem;
+  background-color: $bg-page;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-titles {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: $text-secondary;
+      margin: 0;
+    }
+  }
+}
+
+.filter-card {
+  background-color: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $radius-card;
+  padding: 1.25rem;
+
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+  }
+
+  .search-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        color: $text-muted;
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.6rem 0.75rem 0.6rem 2.4rem;
+        font-size: 0.85rem;
+        border: 1px solid $border-color;
+        border-radius: $radius-btn;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-purple;
+        }
+      }
+    }
+  }
+
+  .filters-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+
+    .filter-wrapper {
+      position: relative;
+    }
+
+    .filter-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.6rem 0.4rem 0.75rem;
+      border: 1px solid $primary-purple;
+      border-radius: 20px;
+      font: inherit;
+      font-size: 0.8rem;
+      color: $primary-purple;
+      background-color: #ffffff;
+      cursor: pointer;
+
+      &:hover,
+      &.open,
+      &.active {
+        background-color: $purple-light;
+      }
+      &.active {
+        font-weight: 600;
+      }
+      &:focus-visible {
+        outline: 2px solid $primary-purple;
+        outline-offset: 2px;
+      }
+
+      .pill-icon {
+        font-size: 0.95rem;
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+      .chevron {
+        font-size: 1.1rem;
+        width: 1.1rem;
+        height: 1.1rem;
+        transition: transform 0.15s;
+      }
+      &.open .chevron {
+        transform: rotate(180deg);
+      }
+    }
+
+    .filter-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 10;
+      min-width: 190px;
+      max-height: 260px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0.25rem;
+      list-style: none;
+      background: $bg-card;
+      border: 1px solid $border-color;
+      border-radius: $radius-btn;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+
+      button {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0.65rem;
+        border: 0;
+        border-radius: 6px;
+        background: none;
+        font: inherit;
+        font-size: 0.8rem;
+        text-align: left;
+        color: $text-primary;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $purple-light;
+        }
+        &.selected {
+          color: $primary-purple;
+          font-weight: 600;
+          background-color: $purple-light;
+        }
+      }
+
+      &.period-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        padding: 0.75rem;
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+        input {
+          padding: 0.4rem 0.5rem;
+          font: inherit;
+          font-size: 0.8rem;
+          border: 1px solid $border-color;
+          border-radius: 6px;
+        }
+      }
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+}
+
+.table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .table-meta-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .meta-subtext {
+      font-size: 0.75rem;
+      color: $text-muted;
+    }
+  }
+
+  .select-all-row {
+    margin-bottom: 0.25rem;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  background-color: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $radius-card;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.825rem;
+
+  thead {
+    background-color: $purple-light;
+
+    th {
+      padding: 0.75rem 0.85rem;
+      font-weight: 600;
+      color: $primary-purple;
+      border-bottom: 1px solid $border-color;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $border-color;
+      transition: background-color 0.15s;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: #f8fafc;
+      }
+
+      &.selected {
+        background-color: #f3e8ff;
+      }
+    }
+
+    td {
+      padding: 0.85rem;
+      vertical-align: middle;
+    }
+  }
+
+  .col-check {
+    width: 36px;
+    text-align: center;
+  }
+
+  .col-protocol {
+    font-weight: 700;
+    white-space: nowrap;
+
+    a {
+      color: $text-primary;
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-purple;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .col-summary {
+    max-width: 260px;
+
+    .summary-title {
+      display: block;
+      color: $text-primary;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .summary-sub,
+    .summary-assignee {
+      display: block;
+      font-size: 0.725rem;
+      color: $text-secondary;
+    }
+  }
+
+  .col-unit {
+    white-space: nowrap;
+    color: $text-primary;
+  }
+
+  .col-status {
+    white-space: nowrap;
+  }
+
+  .col-priority {
+    font-weight: 600;
+  }
+
+  .col-tms-situation {
+    color: $text-primary;
+  }
+
+  .col-tms-solution {
+    min-width: 140px;
+
+    .tms-text {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 0.25rem;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background-color: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+
+      .progress-bar-fill {
+        height: 100%;
+        background-color: $primary-purple;
+        border-radius: 3px;
+      }
+    }
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.service {
+    background-color: $purple-tag-bg;
+    color: $primary-purple;
+  }
+  &.triage {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+  &.open {
+    background-color: #f1f5f9;
+    color: #475569;
+  }
+  &.warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  &.resolved {
+    background-color: $purple-light;
+    color: #6b21a8;
+  }
+  &.closed {
+    background-color: #f1f5f9;
+    color: #64748b;
+  }
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  input {
+    accent-color: $primary-purple;
+  }
+}
+
+.pagination-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+
+  .pagination-info {
+    font-size: 0.8rem;
+    color: $text-secondary;
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .page-indicator {
+      font-size: 0.8rem;
+      color: $text-secondary;
+    }
+
+    .btn-pagination {
+      background-color: #e2e8f0;
+      color: $text-secondary;
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.btn-primary {
+  background-color: $primary-purple;
+  color: #ffffff;
+  border: none;
+  border-radius: $radius-btn;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: $primary-purple-hover;
+  }
+}
+
+.btn-primary-sm {
+  background-color: $primary-purple;
+  color: #ffffff;
+  border: none;
+  border-radius: $radius-btn;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primary-purple-hover;
+  }
+}
+
+.btn-outline-purple-sm {
+  background-color: transparent;
+  color: $primary-purple;
+  border: 1px solid $primary-purple;
+  border-radius: $radius-btn;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $purple-light;
+  }
+}

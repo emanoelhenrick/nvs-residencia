@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.shell-container {
+  --header-h: 50px;
+  --sidebar-w: 250px;
+
+  &.collapsed {
+    --sidebar-w: 70px;
+  }
+}
+
+.body-content {
+  margin-top: var(--header-h);
+  margin-left: var(--sidebar-w);
+  min-height: calc(100dvh - var(--header-h));
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

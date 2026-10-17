@@ -176,8 +176,8 @@ Estabelecer e formalizar o planejamento de garantia da qualidade (QA) do sistema
 | **TS02** | Autenticação, Proteção de Rotas e Controle de Acesso (RBAC) | Integração / Segurança | Backend |
 | **TS03** | Ciclo de Vida e Transições de Status do Chamado (Ticket) | Unitário | Backend |
 | **TS04** | Validação de Regras de Negócio e Cálculo de SLAs | Unitário | Backend |
-| **TS05** | Renderização e Feedback Operacional da Interface do Usuário | Componente | Frontend |
-| **TS06** | Consumo e Resiliência do Serviço de Saúde no Frontend | Integração / Unitário | Frontend |
+| **TS05** | Layout, Navegação, Renderização e Formulários das Páginas do Frontend | Componente / Unitário | Frontend |
+| **TS06** | Consumo e Resiliência do TicketsService no Frontend | Integração / Unitário | Frontend |
 
 ---
 
@@ -296,63 +296,169 @@ Estabelecer e formalizar o planejamento de garantia da qualidade (QA) do sistema
 
 ---
 
-#### TC09 — Renderização da Interface e Identidade Visual no Frontend
+#### TC09 — Renderização do Layout Shell com Menu Lateral e Área de Conteúdo
 - **Cenário:** TS05
 - **Nível:** Componente
 - **Camada:** Frontend (Angular / Jasmine / Karma)
-- **Pré-condições:** Módulo de testes configurado com `TestBed`.
+- **Pré-condições:** Módulo de testes configurado com `TestBed` e rotas de teste.
 - **Passos:**
-  1. Instanciar o componente principal `App`.
+  1. Instanciar o componente `Shell` no `TestBed` com rotas e dependências providas.
   2. Disparar a detecção de mudanças (`fixture.detectChanges()`).
-  3. Inspecionar o elemento `h1` e o container de marca.
+  3. Inspecionar a presença do elemento `<app-header>`.
+  4. Inspecionar a presença do elemento `<app-side-bar>`.
+  5. Inspecionar a presença do contêiner `.body-content` com `<router-outlet>`.
 - **Resultado Esperado:**
   - Componente instanciado com sucesso.
-  - O título principal contém o texto exato "Nexo Varejo Suporte".
-  - O cabeçalho exibe "NVS / Central de suporte".
+  - O layout contém o header, o menu lateral e a área de conteúdo principal.
 
 ---
 
-#### TC10 — Validação do Indicador Visual de Status Operacional e Acessibilidade
+#### TC10 — Itens de Navegação do Menu Lateral (SideBar)
 - **Cenário:** TS05
 - **Nível:** Componente
 - **Camada:** Frontend (Angular / Jasmine / Karma)
-- **Pré-condições:** Componente `App` compilado no `TestBed`.
+- **Pré-condições:** Componente `SideBar` compilado no `TestBed`.
 - **Passos:**
-  1. Inspecionar o elemento com a classe `.status`.
-  2. Verificar a existência e o valor do atributo `aria-label`.
-  3. Verificar o indicador visual `.status-dot`.
+  1. Instanciar o componente `SideBar` no `TestBed`.
+  2. Disparar a detecção de mudanças.
+  3. Consultar todos os elementos `<a>` dentro de `.nav-list`.
+  4. Verificar os textos dos links de navegação.
 - **Resultado Esperado:**
-  - O elemento `.status` possui `aria-label="Status da aplicação: operacional"`.
-  - O texto "Operacional" é exibido na tela, garantindo conformidade com padrões de acessibilidade.
+  - O menu exibe exatamente 5 itens: "Dashboard", "Lista de Chamados", "Abrir chamado", "Triagem" e "Atendimento".
+  - O elemento `<nav>` possui `aria-label="Navegação principal"`.
 
 ---
 
-#### TC11 — Consumo do Endpoint de Saúde pelo Serviço Angular (HealthService)
+#### TC11 — Mapeamento de Rotas para os Cinco Módulos
+- **Cenário:** TS05
+- **Nível:** Unitário
+- **Camada:** Frontend (Angular / Jasmine)
+- **Pré-condições:** Arquivo `app.routes.ts` carregado.
+- **Passos:**
+  1. Importar a constante `routes` do módulo de rotas.
+  2. Verificar que a rota raiz (`''`) redireciona para `dashboard`.
+  3. Verificar que existem rotas filhas para `dashboard`, `list-tickets`, `new-ticket`, `triage` e `attendance`.
+  4. Verificar que cada rota filha mapeia para o componente correto (`Dashboard`, `TicketList`, `NewTicket`, `Triage`, `Attendance`).
+- **Resultado Esperado:**
+  - Todas as 5 rotas estão configuradas corretamente dentro do Shell.
+  - A rota raiz faz redirect para `/dashboard`.
+
+---
+
+#### TC12 — Métodos HTTP do TicketsService (Integração com HttpTestingController)
 - **Cenário:** TS06
 - **Nível:** Integração / Unitário
 - **Camada:** Frontend (Jasmine / `HttpTestingController`)
-- **Pré-condições:** `HealthService` injetado com `provideHttpClientTesting()`.
+- **Pré-condições:** `TicketsService` injetado com `provideHttpClientTesting()`.
 - **Passos:**
-  1. Chamar o método `getHealth()` do serviço.
-  2. Interceptar a requisição HTTP `GET` disparada para `/health`.
-  3. Responder com `{ "status": "ONLINE" }`.
+  1. Chamar `postTicket(payload)` e verificar que uma requisição `POST` é disparada para `http://localhost:8080/api/v1/tickets`.
+  2. Chamar `getAllTickets()` e verificar que uma requisição `GET` é disparada para `http://localhost:8080/api/v1/tickets`.
+  3. Chamar `getTicketById('123')` e verificar que uma requisição `GET` é disparada para `http://localhost:8080/api/v1/tickets/123`.
+  4. Chamar `getHistoryTicket('123')` e verificar que uma requisição `GET` é disparada para `http://localhost:8080/api/v1/tickets/123/history`.
 - **Resultado Esperado:**
-  - A assinatura do Observable emite o objeto com `status === 'ONLINE'`.
+  - Cada método dispara a requisição HTTP correta com URL e verbo adequados.
   - Não restam requisições pendentes no controlador de testes.
 
 ---
 
-#### TC12 — Tratamento de Erro de Comunicação com a API no HealthService
-- **Cenário:** TS06
-- **Nível:** Integração / Unitário
-- **Camada:** Frontend (Jasmine / `HttpTestingController`)
-- **Pré-condições:** `HealthService` injetado com `provideHttpClientTesting()`.
+#### TC13 — Renderização da Página Dashboard
+- **Cenário:** TS05
+- **Nível:** Componente
+- **Camada:** Frontend (Angular / Jasmine / Karma)
+- **Pré-condições:** Componente `Dashboard` compilado no `TestBed`.
 - **Passos:**
-  1. Chamar o método `getHealth()` do serviço.
-  2. Interceptar a requisição HTTP `GET` para `/health`.
-  3. Simular falha de rede ou resposta HTTP 500.
+  1. Instanciar o componente `Dashboard` no `TestBed`.
+  2. Disparar a detecção de mudanças.
+  3. Verificar a presença do título `<h1>` com texto "Dashboard".
+  4. Verificar a presença dos 4 cards KPI na seção `.kpi-grid`.
+  5. Verificar a presença do banner de alerta `.alert-banner`.
 - **Resultado Esperado:**
-  - O serviço captura o erro de forma resiliente, propagando o erro estruturado ou status `OFFLINE` para a interface.
+  - O título principal é "Dashboard".
+  - Os 4 cards KPI são renderizados com seus valores.
+  - O alerta de SLA é exibido.
+
+---
+
+#### TC14 — Validação de Campos Obrigatórios no Formulário de Novo Chamado
+- **Cenário:** TS05
+- **Nível:** Unitário
+- **Camada:** Frontend (Angular / Jasmine / Karma)
+- **Pré-condições:** Componente `NewTicket` compilado no `TestBed`.
+- **Passos:**
+  1. Instanciar o componente `NewTicket` e obter a instância do `FormGroup`.
+  2. Verificar que o formulário inicia como inválido (campos obrigatórios vazios).
+  3. Preencher apenas os campos obrigatórios (`category`, `description`, `impact`, `errorCode`).
+  4. Verificar que o formulário passa a ser válido.
+- **Resultado Esperado:**
+  - Formulário começa inválido.
+  - Após preenchimento dos 4 campos obrigatórios, o formulário torna-se válido.
+
+---
+
+#### TC15 — Envio de Chamado pelo Formulário (NewTicket onSubmit)
+- **Cenário:** TS06
+- **Nível:** Integração
+- **Camada:** Frontend (Jasmine / `HttpTestingController`)
+- **Pré-condições:** Componente `NewTicket` compilado no `TestBed` com `provideHttpClientTesting()`.
+- **Passos:**
+  1. Preencher os campos obrigatórios do formulário.
+  2. Invocar `onSubmit()`.
+  3. Interceptar a requisição `POST` disparada para `/api/v1/tickets`.
+  4. Responder com status 201 e corpo de resposta simulado.
+- **Resultado Esperado:**
+  - A requisição `POST` é disparada com o payload contendo os dados do formulário.
+  - O serviço Angular recebe a resposta com sucesso.
+
+---
+
+#### TC16 — Renderização da Página Lista de Chamados
+- **Cenário:** TS05
+- **Nível:** Componente
+- **Camada:** Frontend (Angular / Jasmine / Karma)
+- **Pré-condições:** Componente `TicketList` compilado no `TestBed` com `provideHttpClientTesting()`.
+- **Passos:**
+  1. Instanciar o componente `TicketList` no `TestBed`.
+  2. Disparar a detecção de mudanças.
+  3. Verificar que a tabela renderiza os 8 chamados mock.
+  4. Verificar a presença do formulário de filtros com os campos esperados.
+- **Resultado Esperado:**
+  - Os 8 chamados mock são exibidos na tabela.
+  - O formulário de filtros está presente com campos de busca, unidade, status, prioridade, responsável e categoria.
+
+---
+
+#### TC17 — Formulário de Triagem e Classificação
+- **Cenário:** TS05
+- **Nível:** Unitário / Componente
+- **Camada:** Frontend (Angular / Jasmine / Karma)
+- **Pré-condições:** Componente `Triage` compilado no `TestBed`.
+- **Passos:**
+  1. Instanciar o componente `Triage` e obter a instância do formulário `triageForm`.
+  2. Verificar que a fila de chamados contém 3 itens.
+  3. Verificar que os campos de classificação possuem valores padrão preenchidos.
+  4. Verificar que `prioridadePersistida` está desabilitado (somente leitura).
+- **Resultado Esperado:**
+  - A fila exibe os 3 chamados para triagem.
+  - O campo de prioridade persistida está desabilitado.
+  - Os campos de classificação possuem valores pré-preenchidos conforme o componente.
+
+---
+
+#### TC18 — Renderização do Histórico e Formulários da Tela de Atendimento
+- **Cenário:** TS05
+- **Nível:** Componente
+- **Camada:** Frontend (Angular / Jasmine / Karma)
+- **Pré-condições:** Componente `Attendance` compilado no `TestBed`.
+- **Passos:**
+  1. Instanciar o componente `Attendance` no `TestBed`.
+  2. Disparar a detecção de mudanças.
+  3. Verificar que a timeline exibe 2 entradas de histórico.
+  4. Verificar a presença dos 3 formulários: comentário (`commentForm`), espera (`waitForm`) e resolução (`resolveForm`).
+  5. Verificar que o `commentForm` inicia com texto pré-preenchido.
+- **Resultado Esperado:**
+  - O histórico (timeline) exibe 2 eventos.
+  - Os 3 formulários estão instanciados e acessíveis.
+  - O campo de comentário possui texto padrão.
 
 ---
 
@@ -364,6 +470,7 @@ Estabelecer e formalizar o planejamento de garantia da qualidade (QA) do sistema
 | **2. Preparação do Ambiente de Testes** | Ajuste dos scripts Gradle, Karma headless e pipeline GitHub Actions. | Alan Vitor, Emanoel Henrick | 1 dia |
 | **3. Implementação dos Testes Unitários de Domínio** | Automação com JUnit 5 para enums, regras de transição de chamados e SLAs (TC05, TC06, TC07, TC08). | Alan Vitor, Rayssa Santana | 3 dias |
 | **4. Implementação dos Testes de Integração Backend** | Automação com Spring Boot Test e MockMvc para endpoints e segurança (TC01, TC02, TC03, TC04). | Alan Vitor, Rayssa Santana | 3 dias |
-| **5. Implementação dos Testes Frontend (Jasmine/Karma)** | Automação de testes de componentes, acessibilidade e serviços HTTP no Angular (TC09, TC10, TC11, TC12). | Alan Vitor, Raiele Leite | 3 dias |
+| **5. Implementação dos Testes Frontend (Jasmine/Karma)** | Automação de testes de componentes, layout, navegação, formulários e serviços HTTP no Angular (TC09, TC10, TC11, TC12, TC13, TC14, TC15, TC16, TC17, TC18). | Alan Vitor, Raiele Leite | 3 dias |
 | **6. Integração e Validação no Pipeline de CI** | Execução de toda a suíte nas GitHub Actions e verificação de relatórios. | Alan Vitor | 1 dia |
 | **7. Homologação e Emissão de Evidências** | Validação final dos fluxos com o PO e consolidação do relatório de testes. | Alan Vitor, Jennifer Zeferino | 1 dia |
+

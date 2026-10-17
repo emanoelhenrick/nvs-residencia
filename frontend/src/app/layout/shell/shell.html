@@ -1,0 +1,8 @@
+<div class="shell-container" [class.collapsed]="!layout.sidebarOpen()">
+  <app-header></app-header>
+  <app-side-bar></app-side-bar>
+
+  <main class="body-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
