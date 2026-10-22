@@ -235,4 +235,43 @@ class TicketServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
         assertEquals("Chamado não encontrado", ex.getMessage());
     }
+
+    @Test
+    @DisplayName("Deve criar chamado com dispositivo válido associado da mesma loja")
+    void shouldCreateTicketWithValidDeviceSuccessfully() {
+        Device device = new Device();
+        device.setId(50L);
+        device.setLocation(location);
+
+        CreateTicketRequest request = new CreateTicketRequest("Impressora de etiquetas travada", 100L);
+
+        when(userRepository.findById(10L)).thenReturn(Optional.of(requester));
+        when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
+        when(deviceRepository.findById(50L)).thenReturn(Optional.of(device));
+        when(ticketRepository.nextProtocolNumber()).thenReturn(55L);
+
+        TicketResponse response = ticketService.create(10L, 50L, request);
+
+        assertNotNull(response);
+        ArgumentCaptor<Ticket> ticketCaptor = ArgumentCaptor.forClass(Ticket.class);
+        verify(ticketRepository).save(ticketCaptor.capture());
+        Ticket savedTicket = ticketCaptor.getValue();
+        assertEquals(device, savedTicket.getDevice());
+    }
+
+    @Test
+    @DisplayName("Deve remover espaços extras da descrição ao criar chamado (trim)")
+    void shouldTrimDescriptionWhenCreatingTicket() {
+        CreateTicketRequest request = new CreateTicketRequest("   Descrição com espaços nas pontas   ", 100L);
+
+        when(userRepository.findById(10L)).thenReturn(Optional.of(requester));
+        when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
+        when(ticketRepository.nextProtocolNumber()).thenReturn(1L);
+
+        ticketService.create(10L, null, request);
+
+        ArgumentCaptor<Ticket> ticketCaptor = ArgumentCaptor.forClass(Ticket.class);
+        verify(ticketRepository).save(ticketCaptor.capture());
+        assertEquals("Descrição com espaços nas pontas", ticketCaptor.getValue().getDescription());
+    }
 }

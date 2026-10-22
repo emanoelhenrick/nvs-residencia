@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nvs.ams.config.SecurityConfig;
 import com.nvs.ams.presentation.dto.request.CreateTicketRequest;
 import com.nvs.ams.presentation.dto.response.TicketResponse;
+import com.nvs.ams.presentation.exception.ApiException;
+import com.nvs.ams.presentation.exception.ApiExceptionHandler;
 import com.nvs.ams.services.TicketService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -26,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TicketController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, ApiExceptionHandler.class})
 @ActiveProfiles("test")
 class TicketControllerTest {
 
@@ -72,7 +75,7 @@ class TicketControllerTest {
     }
 
     @Test
-    @DisplayName("Deve rejeitar criação de chamado com validação inválida (descrição muito curta)")
+    @DisplayName("Deve rejeitar criação de chamado com validação inválida e retornar ProblemDetail com campos")
     void shouldRejectTicketCreationWithInvalidPayload() throws Exception {
         CreateTicketRequest request = new CreateTicketRequest("Curto", 1L);
 
@@ -80,7 +83,9 @@ class TicketControllerTest {
                         .header("X-User-Id", 10L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Dados inválidos"))
+                .andExpect(jsonPath("$.fields.description").value("A descrição deve ter entre 10 e 2000 caracteres"));
     }
 
     @Test
@@ -113,5 +118,45 @@ class TicketControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(100))
                 .andExpect(jsonPath("$.protocol").value("NX-2026-000001"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 404 Not Found quando chamado não existir")
+    void shouldReturn404WhenTicketNotFound() throws Exception {
+        when(ticketService.get(10L, 999L))
+                .thenThrow(new ApiException(HttpStatus.NOT_FOUND, "Chamado não encontrado"));
+
+        mockMvc.perform(get("/api/v1/tickets/999")
+                        .header("X-User-Id", 10L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("Chamado não encontrado"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 403 Forbidden quando usuário tentar acessar chamado de outro solicitante")
+    void shouldReturn403WhenAccessDenied() throws Exception {
+        when(ticketService.get(10L, 100L))
+                .thenThrow(new ApiException(HttpStatus.FORBIDDEN, "Acesso negado"));
+
+        mockMvc.perform(get("/api/v1/tickets/100")
+                        .header("X-User-Id", 10L))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.detail").value("Acesso negado"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 401 Unauthorized quando usuário não for encontrado")
+    void shouldReturn401WhenUserNotFound() throws Exception {
+        CreateTicketRequest request = new CreateTicketRequest("Problema no terminal de pagamento", 1L);
+
+        when(ticketService.create(eq(99L), any(), any()))
+                .thenThrow(new ApiException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
+
+        mockMvc.perform(post("/api/v1/tickets")
+                        .header("X-User-Id", 99L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.detail").value("Usuário não encontrado"));
     }
 }
