@@ -127,6 +127,30 @@ Angular e Spring Boot foram escolhidos porque são tecnologias já conhecidas pe
 | `SPRING_DATASOURCE_PASSWORD` | Senha JDBC | `change-me` |
 | `JWT_SECRET` | Segredo para assinatura de tokens | `replace-with-a-long-random-value` |
 | `SERVER_PORT` | Porta HTTP do backend | `8080` |
+| `SLA_TIME_ZONE` | Fuso horário usado na cobertura do SLA | `America/Recife` |
+| `SLA_HOLIDAYS` | Datas sem cobertura, separadas por vírgula (`AAAA-MM-DD`) | `2026-12-25,2027-01-01` |
+
+### Prazos de SLA dos chamados
+
+O chamado registra automaticamente a abertura. A equipe de triagem define a prioridade
+por `PATCH /api/v1/tickets/{id}/priority` com `{"priority":"P1"}` (valores: `P1` a `P4`).
+O sistema calcula os prazos a partir da abertura e retorna na propriedade `sla` da
+resposta do chamado os limites, horários-limite, minutos consumidos e violações de TMR
+e TMS. Os tempos consumidos contam apenas dentro da cobertura aplicável:
+
+| Prioridade | TMR | TMS | Cobertura |
+| --- | ---: | ---: | --- |
+| P1 — Crítico | 15 min | 2 h | 24/7 |
+| P2 — Alto | 30 min | 6 h | Segunda a sábado, 8h–18h |
+| P3 — Médio | 2 h | 24 h | Segunda a sábado, 8h–18h |
+| P4 — Baixo | 4 h | 72 h | Segunda a sexta, 8h–18h |
+
+Cadastre as datas de feriados nacionais, estaduais e locais em `SLA_HOLIDAYS`; nesses
+dias, P2, P3 e P4 não consomem prazo. P1 continua contando 24/7. Uma primeira resposta
+efetiva é registrada ao enviar uma resposta da equipe por
+`POST /api/v1/tickets/{id}/responses` com `{"message":"..."}`. A resolução é registrada
+por `POST /api/v1/tickets/{id}/resolve`. Ambos os horários aparecem no chamado e os
+eventos ficam no histórico.
 
 ## Execução local
 
@@ -308,7 +332,7 @@ Os responsáveis por aprovar Pull Requests são [Emanoel Henrick](https://github
 
 ## Estado atual
 
-A estrutura inicial executável inclui frontend Angular, backend Spring Boot, PostgreSQL local via Docker Compose, endpoint `/health`, testes básicos e pipeline de build/testes. Autenticação JWT, domínio de chamados, integrações e classificação por IA permanecem como próximas entregas.
+A estrutura executável inclui frontend Angular, backend Spring Boot, PostgreSQL local via Docker Compose, endpoint `/health`, testes e pipeline de build/testes. O backend já registra chamados e controla TMR/TMS por prioridade, incluindo respostas, resolução e cobertura de feriados. Autenticação JWT, integrações e classificação por IA permanecem como próximas entregas.
 
 ## Pull Request de referência
 

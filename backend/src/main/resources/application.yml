@@ -20,3 +20,8 @@ server:
 
 jwt:
   secret: ${JWT_SECRET:local-development-only-change-me}
+
+nvs:
+  sla:
+    time-zone: ${SLA_TIME_ZONE:America/Recife}
+    holidays: ${SLA_HOLIDAYS:}
