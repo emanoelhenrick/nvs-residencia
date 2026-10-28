@@ -3,10 +3,13 @@ package com.nvs.ams.services;
 import com.nvs.ams.domain.models.*;
 import com.nvs.ams.domain.models.enums.EventType;
 import com.nvs.ams.domain.models.enums.LocationType;
+import com.nvs.ams.domain.models.enums.TicketPriority;
 import com.nvs.ams.domain.models.enums.TicketStatus;
 import com.nvs.ams.domain.models.enums.UserRole;
 import com.nvs.ams.infra.repositories.*;
 import com.nvs.ams.presentation.dto.request.CreateTicketRequest;
+import com.nvs.ams.presentation.dto.request.SetTicketPriorityRequest;
+import com.nvs.ams.presentation.dto.request.TicketResponseRequest;
 import com.nvs.ams.presentation.dto.response.TicketResponse;
 import com.nvs.ams.presentation.exception.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -45,15 +49,25 @@ class TicketServiceTest {
     @Mock
     private DeviceRepository deviceRepository;
 
+    @Mock
+    private SlaService slaService;
+
+    @Mock
+    private Clock clock;
+
     @InjectMocks
     private TicketService ticketService;
 
     private User requester;
+    private User supportAgent;
     private Location location;
     private Category category;
+    private final Instant now = Instant.parse("2026-10-28T10:00:00Z");
 
     @BeforeEach
     void setUp() {
+        lenient().when(clock.instant()).thenReturn(now);
+
         location = new Location();
         location.setId(1L);
         location.setCode("LJ-001");
@@ -66,6 +80,13 @@ class TicketServiceTest {
         requester.setEmail("maria@nexo.com");
         requester.setRole(UserRole.REQUESTER);
         requester.setLocation(location);
+
+        supportAgent = new User();
+        supportAgent.setId(20L);
+        supportAgent.setName("Carlos Suporte");
+        supportAgent.setEmail("carlos@nexo.com");
+        supportAgent.setRole(UserRole.TRIAGE_AGENT);
+        supportAgent.setLocation(location);
 
         category = new Category();
         category.setId(100L);
@@ -94,6 +115,7 @@ class TicketServiceTest {
         Ticket savedTicket = ticketCaptor.getValue();
         assertEquals(TicketStatus.OPEN, savedTicket.getStatus());
         assertEquals(requester, savedTicket.getRequester());
+        assertEquals(now, savedTicket.getOpenedAt());
 
         ArgumentCaptor<TicketEvent> eventCaptor = ArgumentCaptor.forClass(TicketEvent.class);
         verify(ticketEventRepository).save(eventCaptor.capture());
@@ -184,10 +206,6 @@ class TicketServiceTest {
     @Test
     @DisplayName("Deve listar todos os chamados quando o usuário for atendente ou líder")
     void shouldListAllTicketsWhenUserIsNotRequester() {
-        User agent = new User();
-        agent.setId(20L);
-        agent.setRole(UserRole.TRIAGE_AGENT);
-
         Ticket ticket = new Ticket();
         ticket.setId(1L);
         ticket.setProtocol("NX-2026-000001");
@@ -197,7 +215,7 @@ class TicketServiceTest {
         ticket.setRequester(requester);
         ticket.setStatus(TicketStatus.OPEN);
 
-        when(userRepository.findById(20L)).thenReturn(Optional.of(agent));
+        when(userRepository.findById(20L)).thenReturn(Optional.of(supportAgent));
         when(ticketRepository.findAllByOrderByOpenedAtDesc()).thenReturn(List.of(ticket));
 
         List<TicketResponse> list = ticketService.list(20L);
@@ -273,5 +291,107 @@ class TicketServiceTest {
         ArgumentCaptor<Ticket> ticketCaptor = ArgumentCaptor.forClass(Ticket.class);
         verify(ticketRepository).save(ticketCaptor.capture());
         assertEquals("Descrição com espaços nas pontas", ticketCaptor.getValue().getDescription());
+    }
+
+    @Test
+    @DisplayName("Deve definir prioridade com sucesso por agente de triagem")
+    void shouldSetPrioritySuccessfully() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setCategory(category);
+        ticket.setLocation(location);
+        ticket.setStatus(TicketStatus.OPEN);
+
+        when(userRepository.findById(20L)).thenReturn(Optional.of(supportAgent));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        SetTicketPriorityRequest req = new SetTicketPriorityRequest(TicketPriority.P1);
+        TicketResponse response = ticketService.setPriority(20L, 1L, req);
+
+        assertNotNull(response);
+        assertEquals(TicketPriority.P1, ticket.getPriority());
+
+        ArgumentCaptor<TicketEvent> eventCaptor = ArgumentCaptor.forClass(TicketEvent.class);
+        verify(ticketEventRepository).save(eventCaptor.capture());
+        assertEquals(EventType.CLASSIFIED, eventCaptor.getValue().getType());
+        assertEquals("P1", eventCaptor.getValue().getPayload().get("priority"));
+    }
+
+    @Test
+    @DisplayName("Deve negar definição de prioridade quando usuário for REQUESTER (403)")
+    void shouldDenySetPriorityForRequester() {
+        when(userRepository.findById(10L)).thenReturn(Optional.of(requester));
+
+        SetTicketPriorityRequest req = new SetTicketPriorityRequest(TicketPriority.P2);
+        ApiException ex = assertThrows(ApiException.class, () -> ticketService.setPriority(10L, 1L, req));
+
+        assertEquals(HttpStatus.FORBIDDEN, ex.getStatus());
+        assertEquals("Somente a equipe de suporte pode classificar chamados", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve registrar resposta técnica e atualizar firstResponseAt se ainda não preenchido")
+    void shouldRecordResponseSuccessfully() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setCategory(category);
+        ticket.setLocation(location);
+        ticket.setStatus(TicketStatus.OPEN);
+        ticket.setFirstResponseAt(null);
+
+        when(userRepository.findById(20L)).thenReturn(Optional.of(supportAgent));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        TicketResponseRequest req = new TicketResponseRequest("Verificando conectividade do terminal");
+        TicketResponse response = ticketService.recordResponse(20L, 1L, req);
+
+        assertNotNull(response);
+        assertEquals(now, ticket.getFirstResponseAt());
+
+        ArgumentCaptor<TicketEvent> eventCaptor = ArgumentCaptor.forClass(TicketEvent.class);
+        verify(ticketEventRepository).save(eventCaptor.capture());
+        assertEquals(EventType.COMMENTED, eventCaptor.getValue().getType());
+        assertEquals("Verificando conectividade do terminal", eventCaptor.getValue().getPayload().get("message"));
+    }
+
+    @Test
+    @DisplayName("Deve falhar ao registrar resposta se chamado já estiver resolvido (409)")
+    void shouldFailToRecordResponseWhenAlreadyResolved() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setResolvedAt(now);
+
+        when(userRepository.findById(20L)).thenReturn(Optional.of(supportAgent));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        TicketResponseRequest req = new TicketResponseRequest("Nova mensagem");
+        ApiException ex = assertThrows(ApiException.class, () -> ticketService.recordResponse(20L, 1L, req));
+
+        assertEquals(HttpStatus.CONFLICT, ex.getStatus());
+        assertEquals("O chamado já foi resolvido", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve resolver chamado com sucesso e atualizar status e resolvedAt")
+    void shouldResolveTicketSuccessfully() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setCategory(category);
+        ticket.setLocation(location);
+        ticket.setStatus(TicketStatus.IN_PROGRESS);
+
+        when(userRepository.findById(20L)).thenReturn(Optional.of(supportAgent));
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        TicketResponse response = ticketService.resolve(20L, 1L);
+
+        assertNotNull(response);
+        assertEquals(now, ticket.getResolvedAt());
+        assertEquals(TicketStatus.RESOLVED, ticket.getStatus());
+
+        ArgumentCaptor<TicketEvent> eventCaptor = ArgumentCaptor.forClass(TicketEvent.class);
+        verify(ticketEventRepository).save(eventCaptor.capture());
+        assertEquals(EventType.STATUS_CHANGED, eventCaptor.getValue().getType());
+        assertEquals("RESOLVED", eventCaptor.getValue().getPayload().get("status"));
     }
 }

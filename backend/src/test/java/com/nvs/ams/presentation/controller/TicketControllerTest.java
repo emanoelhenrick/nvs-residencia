@@ -2,7 +2,10 @@ package com.nvs.ams.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nvs.ams.config.SecurityConfig;
+import com.nvs.ams.domain.models.enums.TicketPriority;
 import com.nvs.ams.presentation.dto.request.CreateTicketRequest;
+import com.nvs.ams.presentation.dto.request.SetTicketPriorityRequest;
+import com.nvs.ams.presentation.dto.request.TicketResponseRequest;
 import com.nvs.ams.presentation.dto.response.TicketResponse;
 import com.nvs.ams.presentation.exception.ApiException;
 import com.nvs.ams.presentation.exception.ApiExceptionHandler;
@@ -25,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -158,5 +162,57 @@ class TicketControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.detail").value("Usuário não encontrado"));
+    }
+
+    @Test
+    @DisplayName("Deve definir prioridade do chamado via PATCH /api/v1/tickets/{id}/priority")
+    void shouldSetTicketPriority() throws Exception {
+        SetTicketPriorityRequest request = new SetTicketPriorityRequest(TicketPriority.P1);
+        TicketResponse response = new TicketResponse(
+                100L, "NX-2026-000001", "Problema no terminal",
+                "PDV", "Loja Boa Viagem", "OPEN", Instant.now());
+
+        when(ticketService.setPriority(eq(20L), eq(100L), any(SetTicketPriorityRequest.class))).thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/tickets/100/priority")
+                        .header("X-User-Id", 20L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(100))
+                .andExpect(jsonPath("$.protocol").value("NX-2026-000001"));
+    }
+
+    @Test
+    @DisplayName("Deve registrar resposta técnica do chamado via POST /api/v1/tickets/{id}/responses")
+    void shouldRecordTicketResponse() throws Exception {
+        TicketResponseRequest request = new TicketResponseRequest("Atendimento iniciado");
+        TicketResponse response = new TicketResponse(
+                100L, "NX-2026-000001", "Problema no terminal",
+                "PDV", "Loja Boa Viagem", "IN_PROGRESS", Instant.now());
+
+        when(ticketService.recordResponse(eq(20L), eq(100L), any(TicketResponseRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/tickets/100/responses")
+                        .header("X-User-Id", 20L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
+    }
+
+    @Test
+    @DisplayName("Deve resolver chamado via POST /api/v1/tickets/{id}/resolve")
+    void shouldResolveTicket() throws Exception {
+        TicketResponse response = new TicketResponse(
+                100L, "NX-2026-000001", "Problema no terminal",
+                "PDV", "Loja Boa Viagem", "RESOLVED", Instant.now());
+
+        when(ticketService.resolve(20L, 100L)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/tickets/100/resolve")
+                        .header("X-User-Id", 20L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("RESOLVED"));
     }
 }
