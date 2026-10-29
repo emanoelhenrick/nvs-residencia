@@ -12,6 +12,7 @@ public record TicketResponse(
         String category,
         String location,
         String status,
+        String assignedTeam,
         Instant openedAt,
         Instant firstResponseAt,
         Instant resolvedAt,
@@ -21,7 +22,9 @@ public record TicketResponse(
         return new TicketResponse(
                 t.getId(), t.getProtocol(), t.getDescription(),
                 t.getCategory().getName(), t.getLocation().getName(),
-                t.getStatus().name(), t.getOpenedAt(), t.getFirstResponseAt(),
+                t.getStatus().name(),
+                t.getAssignedTeam() == null ? null : t.getAssignedTeam().getName(),
+                t.getOpenedAt(), t.getFirstResponseAt(),
                 t.getResolvedAt(), TicketSlaResponse.from(slaService.snapshot(t)));
     }
 }

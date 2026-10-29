@@ -1,5 +1,6 @@
 package com.nvs.ams.infra.repositories;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByRequesterIdOrderByOpenedAtDesc(Long requesterId);
 
     List<Ticket> findAllByOrderByOpenedAtDesc();
+
+    List<Ticket> findByOpenedAtGreaterThanEqualAndOpenedAtLessThan(Instant from, Instant to);
 }

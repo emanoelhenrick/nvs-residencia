@@ -13,7 +13,9 @@ public record TicketSlaResponse(
         long tmrConsumedMinutes,
         long tmsConsumedMinutes,
         boolean tmrBreached,
-        boolean tmsBreached
+        boolean tmsBreached,
+        boolean tmrWarningDue,
+        boolean tmsWarningDue
 ) {
     public static TicketSlaResponse from(SlaMetrics metrics) {
         if (metrics == null) {
@@ -28,6 +30,8 @@ public record TicketSlaResponse(
                 metrics.tmrConsumedMinutes(),
                 metrics.tmsConsumedMinutes(),
                 metrics.tmrBreached(),
-                metrics.tmsBreached());
+                metrics.tmsBreached(),
+                metrics.tmrWarningDue(),
+                metrics.tmsWarningDue());
     }
 }

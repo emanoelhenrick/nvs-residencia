@@ -70,6 +70,39 @@ public class Ticket {
     @Column(name = "resolved_at")
     private Instant resolvedAt;
 
+    @Column(name = "sla_paused_at")
+    private Instant slaPausedAt;
+
+    @Column(name = "tmr_paused_covered_seconds", nullable = false)
+    private long tmrPausedCoveredSeconds;
+
+    @Column(name = "tms_paused_covered_seconds", nullable = false)
+    private long tmsPausedCoveredSeconds;
+
+    @Column(name = "tmr_pause_extension_seconds", nullable = false)
+    private long tmrPauseExtensionSeconds;
+
+    @Column(name = "tms_pause_extension_seconds", nullable = false)
+    private long tmsPauseExtensionSeconds;
+
+    @Column(name = "tmr_pause_eligible", nullable = false)
+    private boolean tmrPauseEligible;
+
+    @Column(name = "tms_pause_eligible", nullable = false)
+    private boolean tmsPauseEligible;
+
+    @Column(name = "tmr_clock_paused", nullable = false)
+    private boolean tmrClockPaused;
+
+    @Column(name = "tms_clock_paused", nullable = false)
+    private boolean tmsClockPaused;
+
+    @Column(name = "tmr_alert_sent", nullable = false)
+    private boolean tmrAlertSent;
+
+    @Column(name = "tms_alert_sent", nullable = false)
+    private boolean tmsAlertSent;
+
     @PrePersist
     void onCreate() {
         if (this.openedAt == null) {

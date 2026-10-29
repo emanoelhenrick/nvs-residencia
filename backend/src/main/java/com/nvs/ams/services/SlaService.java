@@ -20,14 +20,14 @@ import com.nvs.ams.domain.models.enums.TicketPriority;
 @Service
 public class SlaService {
 
-    private static final LocalTime COVERAGE_START = LocalTime.of(8, 0);
+    private static final LocalTime COVERAGE_START = LocalTime.of(8, 0);//janela de atendimento
     private static final LocalTime COVERAGE_END = LocalTime.of(18, 0);
 
     private final Clock clock;
     private final ZoneId zone;
     private final Set<LocalDate> holidays;
 
-    public SlaService(Clock clock,
+    public SlaService(Clock clock,//Configura o relógio, o fuso horário e os feriados utilizados no cálculo do SLA.
                       @Value("${nvs.sla.time-zone:America/Recife}") String timeZone,
                       @Value("${nvs.sla.holidays:}") String holidayDates) {
         this.clock = clock;
@@ -39,21 +39,45 @@ public class SlaService {
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    public SlaMetrics snapshot(Ticket ticket) {
+    public SlaMetrics snapshot(Ticket ticket) {//recebe o chamado e verifica a prioridade
         TicketPriority priority = ticket.getPriority();
         if (priority == null) {
-            return null;
+            return null;//não produz métricas por enquanto
         }
 
         Instant now = clock.instant();
+        Instant activeEnd = ticket.getSlaPausedAt() == null
+                ? now : ticket.getSlaPausedAt();
         Instant firstResponseEnd = ticket.getFirstResponseAt() == null
-                ? now : ticket.getFirstResponseAt();
+                ? activeEnd : ticket.getFirstResponseAt();
         Instant resolutionEnd = ticket.getResolvedAt() == null
-                ? now : ticket.getResolvedAt();
+                ? activeEnd : ticket.getResolvedAt();
+
+        long tmrConsumedSeconds = Math.max(0,
+                coveredSecondsBetween(ticket.getOpenedAt(), firstResponseEnd, priority)
+                        - ticket.getTmrPausedCoveredSeconds());
+        long tmsConsumedSeconds = Math.max(0,
+                coveredSecondsBetween(ticket.getOpenedAt(), resolutionEnd, priority)
+                        - ticket.getTmsPausedCoveredSeconds());
+
+        long currentPauseSeconds = ticket.getSlaPausedAt() == null ? 0
+                : coveredSecondsBetween(ticket.getSlaPausedAt(), now, priority);
+        long currentTmrExtension = ticket.getResolvedAt() == null
+                && ticket.getFirstResponseAt() == null
+                && ticket.isTmrPauseEligible() ? currentPauseSeconds : 0;
+        long currentTmsExtension = ticket.getResolvedAt() == null
+                && ticket.isTmsPauseEligible() ? currentPauseSeconds : 0;
+
         Instant tmrDeadline = addCoveredTime(
-                ticket.getOpenedAt(), priority.getFirstResponseTarget(), priority);
+                ticket.getOpenedAt(),
+                priority.getFirstResponseTarget().plusSeconds(
+                        ticket.getTmrPauseExtensionSeconds() + currentTmrExtension),
+                priority);
         Instant tmsDeadline = addCoveredTime(
-                ticket.getOpenedAt(), priority.getResolutionTarget(), priority);
+                ticket.getOpenedAt(),
+                priority.getResolutionTarget().plusSeconds(
+                        ticket.getTmsPauseExtensionSeconds() + currentTmsExtension),
+                priority);
 
         return new SlaMetrics(
                 priority,
@@ -61,25 +85,33 @@ public class SlaService {
                 priority.getResolutionTarget().toMinutes(),
                 tmrDeadline,
                 tmsDeadline,
-                coveredMinutesBetween(ticket.getOpenedAt(), firstResponseEnd, priority),
-                coveredMinutesBetween(ticket.getOpenedAt(), resolutionEnd, priority),
+                Duration.ofSeconds(tmrConsumedSeconds).toMinutes(),
+                Duration.ofSeconds(tmsConsumedSeconds).toMinutes(),
                 ticket.getFirstResponseAt() == null
                         ? now.isAfter(tmrDeadline)
                         : ticket.getFirstResponseAt().isAfter(tmrDeadline),
                 ticket.getResolvedAt() == null
                         ? now.isAfter(tmsDeadline)
-                        : ticket.getResolvedAt().isAfter(tmsDeadline));
+                        : ticket.getResolvedAt().isAfter(tmsDeadline),
+                ticket.getFirstResponseAt() == null
+                        && ticket.getResolvedAt() == null
+                        && tmrConsumedSeconds * 100
+                                >= priority.getFirstResponseTarget().toSeconds() * 80,
+                ticket.getResolvedAt() == null
+                        && tmsConsumedSeconds * 100
+                                >= priority.getResolutionTarget().toSeconds() * 80);
     }
 
-    private Instant addCoveredTime(Instant start, Duration target,
+    private Instant addCoveredTime(Instant start, Duration target,//Calcula o prazo final do SLA,
+                                   // considerando o horário de atendimento, os dias válidos e a prioridade.
                                    TicketPriority priority) {
-        if (priority.hasContinuousCoverage()) {
+        if (priority.hasContinuousCoverage()) {//cobertura continua
             return start.plus(target);
         }
 
         Duration remaining = target;
         Instant cursor = start;
-        while (!remaining.isZero()) {
+        while (!remaining.isZero()) {//verifica quanto tempo de sla pode ser contabilizado e desconta do dia válido
             ZonedDateTime localCursor = cursor.atZone(zone);
             LocalDate date = localCursor.toLocalDate();
             if (!isCoveredDate(date, priority)) {
@@ -87,32 +119,34 @@ public class SlaService {
                 continue;
             }
 
-            Instant windowStart = date.atTime(COVERAGE_START).atZone(zone).toInstant();
-            Instant windowEnd = date.atTime(COVERAGE_END).atZone(zone).toInstant();
-            Instant coveredStart = cursor.isAfter(windowStart) ? cursor : windowStart;
-            if (!coveredStart.isBefore(windowEnd)) {
+            Instant windowStart = date.atTime(COVERAGE_START).atZone(zone).toInstant();//inicio expediente
+            Instant windowEnd = date.atTime(COVERAGE_END).atZone(zone).toInstant();//fim expediente
+            Instant coveredStart = cursor.isAfter(windowStart) ? cursor : windowStart;//pode ser contabilizado
+            if (!coveredStart.isBefore(windowEnd)) {//horario começar o SLA já chegou ou passou das 18h
                 cursor = nextDayAtCoverageStart(date);
                 continue;
             }
 
-            Duration available = Duration.between(coveredStart, windowEnd);
-            if (remaining.compareTo(available) <= 0) {
+            Duration available = Duration.between(coveredStart, windowEnd);//tempo disponivel
+            if (remaining.compareTo(available) <= 0) {//tempo SLA é menor ou igual ao tempo disponivel hoje
                 return coveredStart.plus(remaining);
             }
 
-            remaining = remaining.minus(available);
-            cursor = nextDayAtCoverageStart(date);
+            remaining = remaining.minus(available);//subtrai o que falta
+            cursor = nextDayAtCoverageStart(date);//prox dia
         }
         return cursor;
     }
 
-    private long coveredMinutesBetween(Instant start, Instant end,
-                                       TicketPriority priority) {
+    public long coveredSecondsBetween(Instant start, Instant end,//Calcula quantos segundos de SLA foram contabilizados
+                                      // entre duas datas,
+                                      // respeitando os horários de atendimento.
+                                      TicketPriority priority) {
         if (!end.isAfter(start)) {
             return 0;
         }
         if (priority.hasContinuousCoverage()) {
-            return Duration.between(start, end).toMinutes();
+            return Duration.between(start, end).getSeconds();
         }
 
         LocalDate date = start.atZone(zone).toLocalDate();
@@ -130,10 +164,11 @@ public class SlaService {
             }
             date = date.plusDays(1);
         }
-        return covered.toMinutes();
+        return covered.getSeconds();
     }
 
-    private boolean isCoveredDate(LocalDate date, TicketPriority priority) {
+    private boolean isCoveredDate(LocalDate date, TicketPriority priority) {//Verifica se o dia pode ser contabilizado no SLA,
+        // considerando a prioridade e os feriados.
         if (holidays.contains(date)) {
             return false;
         }
@@ -144,11 +179,11 @@ public class SlaService {
         };
     }
 
-    private Instant nextDayAtCoverageStart(LocalDate date) {
+    private Instant nextDayAtCoverageStart(LocalDate date) {//Retorna o próximo dia às 8h, início do expediente.
         return date.plusDays(1).atTime(COVERAGE_START).atZone(zone).toInstant();
     }
 
-    public record SlaMetrics(
+    public record SlaMetrics(//Reúne as informações calculadas do SLA em um único objeto.
             TicketPriority priority,
             long tmrTargetMinutes,
             long tmsTargetMinutes,
@@ -157,6 +192,8 @@ public class SlaService {
             long tmrConsumedMinutes,
             long tmsConsumedMinutes,
             boolean tmrBreached,
-            boolean tmsBreached) {
+            boolean tmsBreached,
+            boolean tmrWarningDue,
+            boolean tmsWarningDue) {
     }
 }

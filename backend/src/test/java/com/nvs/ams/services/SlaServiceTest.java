@@ -87,6 +87,67 @@ class SlaServiceTest {
         assertTrue(metrics.tmrBreached());
     }
 
+    @Test
+    void pausesSlaConsumptionAndExtendsDeadlinesWhileTicketWaits() {
+        SlaService service = serviceAt("2026-10-09T20:30:00Z", "");
+        Ticket ticket = ticket("2026-10-09T20:00:00Z", TicketPriority.P1);
+        ticket.setSlaPausedAt(Instant.parse("2026-10-09T20:10:00Z"));
+        ticket.setTmrPauseEligible(true);
+        ticket.setTmsPauseEligible(true);
+        ticket.setTmrClockPaused(true);
+        ticket.setTmsClockPaused(true);
+
+        SlaService.SlaMetrics metrics = service.snapshot(ticket);
+
+        assertEquals(10, metrics.tmrConsumedMinutes());
+        assertEquals(10, metrics.tmsConsumedMinutes());
+        assertEquals(Instant.parse("2026-10-09T22:20:00Z"), metrics.tmsDeadlineAt());
+        assertFalse(metrics.tmrBreached());
+        assertFalse(metrics.tmsBreached());
+    }
+
+    @Test
+    void retainsConsumedSlaAfterPausedIntervalIsResumed() {
+        SlaService service = serviceAt("2026-10-09T20:30:00Z", "");
+        Ticket ticket = ticket("2026-10-09T20:00:00Z", TicketPriority.P1);
+        ticket.setTmrPausedCoveredSeconds(600);
+        ticket.setTmsPausedCoveredSeconds(600);
+        ticket.setTmrPauseExtensionSeconds(600);
+        ticket.setTmsPauseExtensionSeconds(600);
+
+        SlaService.SlaMetrics metrics = service.snapshot(ticket);
+
+        assertEquals(20, metrics.tmrConsumedMinutes());
+        assertEquals(20, metrics.tmsConsumedMinutes());
+        assertTrue(metrics.tmrBreached());
+        assertFalse(metrics.tmsBreached());
+    }
+
+    @Test
+    void identifiesSlaWarningAtEightyPercentOfTarget() {
+        SlaService service = serviceAt("2026-10-09T20:12:00Z", "");
+        Ticket ticket = ticket("2026-10-09T20:00:00Z", TicketPriority.P1);
+
+        SlaService.SlaMetrics metrics = service.snapshot(ticket);
+
+        assertTrue(metrics.tmrWarningDue());
+        assertFalse(metrics.tmsWarningDue());
+    }
+
+    @Test
+    void keepsResolutionDeadlineAndBreachFixedAfterResolution() {
+        SlaService service = serviceAt("2026-10-09T23:00:00Z", "");
+        Ticket ticket = ticket("2026-10-09T20:00:00Z", TicketPriority.P1);
+        ticket.setResolvedAt(Instant.parse("2026-10-09T22:01:00Z"));
+        ticket.setSlaPausedAt(ticket.getResolvedAt());
+        ticket.setTmsPauseEligible(true);
+
+        SlaService.SlaMetrics metrics = service.snapshot(ticket);
+
+        assertEquals(Instant.parse("2026-10-09T22:00:00Z"), metrics.tmsDeadlineAt());
+        assertTrue(metrics.tmsBreached());
+    }
+
     private static SlaService serviceAt(String now, String holidays) {
         return new SlaService(
                 Clock.fixed(Instant.parse(now), ZoneOffset.UTC),

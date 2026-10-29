@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.nvs.ams.config.SecurityConfig;
 import com.nvs.ams.services.TicketService;
+import com.nvs.ams.services.SlaReportingService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,6 +24,9 @@ class AmsApplicationTests {
 
 	@MockitoBean
 	private TicketService ticketService;
+
+	@MockitoBean
+	private SlaReportingService slaReportingService;
 
 	@Test
 	void healthEndpointReturnsUp() throws Exception {
