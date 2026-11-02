@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.nvs.ams.infra.repositories.UserRepository;
 import io.jsonwebtoken.JwtException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                 return;
             }
 
-            UserDetails userDetails = (UserDetails) userRepository.findUserDetailsByEmail(userEmail);
+            UserDetails userDetails = userRepository.findUserDetailsByEmail(userEmail);
             if (userDetails == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuário não encontrado");
                 return;
