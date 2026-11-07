@@ -1,54 +1,49 @@
-import { IDevice } from './device.model';
-import { ILocation } from './location.model';
-import { ITeam } from './team.model';
-import { IUser } from './user.model';
+import { IAction, IGroupDecision } from './ticket-action.model';
+import { IComment } from './ticket-comment.model';
+import { Priority, Severity, TicketKind, TicketScope, TicketStatus } from './ticket-enums.model';
+import { IEvidence } from './ticket-evidence.model';
+import { IHistory } from './ticket-history.model';
+import { ISla } from './ticket-sla.model';
+import { ISupplier } from './ticket-supplier.model';
+
+export interface IRequester {
+  id: string | null;
+  name: string;
+}
 
 export interface ITicket {
+  id: string;
+  kind: TicketKind;
+  title: string;
   description: string;
   category: string;
-  requester: IUser;
-  location: ILocation;
-  device: IDevice;
-  status:
-    | 'OPEN'
-    | 'IN_TRIAGE'
-    | 'IN_PROGRESS'
-    | 'WAITING_REQUESTER'
-    | 'WAITING_THIRD_PARTY'
-    | 'RESOLVED'
-    | 'CLOSED'
-    | 'CANCELLED'
-    | 'REOPENED';
-  assignedTeam: ITeam;
-}
-
-export interface ITicketResponse {
-  protocol: string;
-  summary: string;
-  category: string;
+  errorCode: string;
+  impact: string;
+  affectsOthers: boolean;
+  scope: TicketScope;
+  status: TicketStatus;
+  severity: Severity | null;
+  priority: Priority | null;
+  urgency: string;
+  requester: IRequester;
+  unitId: string;
+  device: string;
   assignee: string;
-  unit: string;
-  status: string;
-  statusType: 'service' | 'triage' | 'open' | 'warning' | 'resolved' | 'closed';
-  priority: string;
-  tmsSituation: string;
-  tmsSolutionText: string;
-  tmsSolutionProgress?: number;
-  selected?: boolean;
-}
-
-export interface IFileEvidence {
-  name: string;
-  size: string;
-  description: string;
-}
-
-export interface IFilterTicket {
-  search: string;
-  unit: string;
-  status: string;
-  priority: string;
-  assignee: string;
-  category: string;
-  period: string;
+  assigneeId: string | null;
+  supplier: ISupplier | null;
+  openedAt: string;
+  evidences: IEvidence[];
+  comments: IComment[];
+  history: IHistory[];
+  sla: ISla;
+  parentId: string | null;
+  childIds: string[];
+  group: IGroupDecision | null;
+  groupDismissed: IAction | null;
+  resolution: IAction | null;
+  cancellation: IAction | null;
+  reopening: IAction | null;
+  closedAuto: string | null;
+  reassessments: IAction[];
+  escalations: IAction[];
 }

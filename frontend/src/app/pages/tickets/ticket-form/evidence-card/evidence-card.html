@@ -1,0 +1,32 @@
+<section class="card">
+  <h2 style="margin-bottom: 8px">Evidência{{ required() ? ' *' : '' }}</h2>
+  <p>Adicione uma evidência da operação afetada no terminal. Não inclua dados de clientes.</p>
+  @if (evidence(); as f) {
+    <div class="file">
+      <app-icon name="paperclip" />
+      <div>
+        <strong>{{ f.name }}</strong>
+        <div class="small muted">{{ f.sizeKb }} KB · foto inicial da operação</div>
+        <button type="button" class="btn btn-sm" style="margin-top: 8px" (click)="removed.emit()">
+          Remover arquivo
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="file" [class.bad]="showError()">
+      <app-icon name="paperclip" />
+      <div>
+        <strong>Adicione a evidência</strong>
+        @if (required()) {
+          <div class="small bad-text">Evidência obrigatória neste exemplo</div>
+        } @else {
+          <div class="small muted">Opcional para esta categoria</div>
+        }
+        <div style="margin-top: 8px"><app-file-picker (picked)="picked.emit($event)" /></div>
+      </div>
+    </div>
+  }
+  @if (showError()) {
+    <p class="strong" style="margin-top: 12px">Adicione a evidência antes de enviar.</p>
+  }
+</section>

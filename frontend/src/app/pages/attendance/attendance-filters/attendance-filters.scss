@@ -1,0 +1,13 @@
+.filters {
+  display: grid;
+  grid-template-columns: minmax(200px, 2fr) repeat(3, minmax(150px, 1fr));
+  gap: 10px;
+}
+@media (max-width: 900px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  .s {
+    grid-column: 1 / -1;
+  }
+}

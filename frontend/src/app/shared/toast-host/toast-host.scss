@@ -1,0 +1,36 @@
+.host {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2000;
+}
+
+.toast {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-left: 4px solid var(--c-primary);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  max-width: 380px;
+}
+
+.toast.success {
+  border-left-color: #16a34a;
+}
+
+.toast.error {
+  border-left-color: #b42318;
+}
+
+button {
+  background: none;
+  border: 0;
+  color: var(--c-muted);
+}

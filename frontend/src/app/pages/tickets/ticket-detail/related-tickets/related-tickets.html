@@ -1,0 +1,46 @@
+@let t = ticket();
+<section class="card" id="relacionados">
+  <h2 style="margin-bottom: 12px">
+    {{ reference() ? 'Chamado de referência' : 'Chamados relacionados' }}
+  </h2>
+  @if (reference(); as ref) {
+    <p>{{ ref }} · {{ t.category }} · {{ t.unitId }}</p>
+  }
+  @if (t.parentId; as parentId) {
+    <p>
+      Incidente Pai:
+      @if (staff()) {
+        <a [routerLink]="['/tickets', parentId]">{{ parentId }}</a>
+      } @else {
+        {{ parentId }}
+      }
+      @if (linkedBy(); as by) {
+        · vínculo confirmado por {{ by }}.
+      }
+      O vínculo não altera status, severidade, prioridade ou SLA deste chamado.
+    </p>
+    @for (s of siblings(); track s.id) {
+      <p class="small" style="margin-top: 6px">
+        <a [routerLink]="['/tickets', s.id]">{{ s.id }}</a> · {{ s.title }} · {{ time(s.openedAt) }}
+      </p>
+    }
+  } @else if (suggestion().length) {
+    <p>
+      @for (s of suggestion(); track s.id) {
+        <a [routerLink]="['/tickets', s.id]">{{ s.id }}</a> · {{ time(s.openedAt)
+        }}{{ $last ? '' : ' e ' }}
+      }
+      · {{ t.category }} · {{ t.unitId }}. Há uma sugestão de possível incidente em análise; nenhum
+      vínculo foi confirmado.
+    </p>
+    <p class="footnote">
+      O vínculo a um incidente pai só poderá ser feito após revisão das evidências, justificativa e
+      confirmação humana. Agrupamento não eleva a severidade.
+    </p>
+    @if (staff()) {
+      <a routerLink="/triage" class="btn btn-sm" style="margin-top: 10px">Revisar na triagem</a>
+    }
+  } @else if (empty()) {
+    <p class="muted">Nenhum chamado relacionado.</p>
+  }
+</section>

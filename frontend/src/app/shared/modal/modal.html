@@ -1,0 +1,19 @@
+<div class="backdrop" (click)="closed.emit()">
+  <section
+    class="dialog"
+    [class.wide]="wide()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title()"
+    (click)="$event.stopPropagation()"
+  >
+    <header>
+      <h2>{{ title() }}</h2>
+      <button type="button" class="x" aria-label="Fechar" (click)="closed.emit()">
+        <app-icon name="x" />
+      </button>
+    </header>
+    <div class="content"><ng-content /></div>
+    <footer><ng-content select="[footer]" /></footer>
+  </section>
+</div>

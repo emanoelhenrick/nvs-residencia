@@ -1,0 +1,8 @@
+<div class="card">
+  <div class="inner">
+    <app-icon [name]="icon()" [size]="22" />
+    <h2>{{ title() }}</h2>
+    <p><ng-content /></p>
+  </div>
+</div>
+<div style="margin-top: 16px"><ng-content select="[actions]" /></div>

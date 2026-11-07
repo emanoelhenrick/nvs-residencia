@@ -1,0 +1,64 @@
+<div class="page">
+  <app-page-header title="Lista de chamados" [subtitle]="subtitle()">
+    @if (!isSupplier()) {
+      <a routerLink="/new-ticket" class="btn btn-primary">Abrir chamado</a>
+    }
+  </app-page-header>
+
+  <app-ticket-filters
+    [applied]="filters()"
+    [units]="units()"
+    (apply)="apply($event)"
+    (clear)="clear()"
+  />
+  @if (summary().length && !loading()) {
+    <p class="footnote">Filtros aplicados: {{ summary().join(' · ') }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted" style="margin-top: 24px" role="status">Carregando chamados…</p>
+  } @else if (error()) {
+    <app-list-heading [count]="0" [stamp]="stamp()" />
+    <app-empty-state icon="alert" title="Não foi possível carregar os chamados">
+      A consulta falhou. Seus filtros e dados foram preservados. Confira a conexão e tente novamente.
+      <button actions type="button" class="btn btn-primary" (click)="load()">Tentar novamente</button>
+    </app-empty-state>
+  } @else if (items().length === 0) {
+    <app-list-heading [count]="0" [stamp]="stamp()" />
+    <app-empty-state icon="inbox" title="Nenhum chamado encontrado">
+      {{
+        summary().length
+          ? 'Não há registros para ' +
+            summary().join(', ') +
+            '. Limpe os filtros para ver outros chamados.'
+          : 'Não há chamados no período selecionado. Ajuste o período ou abra um novo chamado.'
+      }}
+      <button actions type="button" class="btn btn-primary" (click)="clear()">Limpar filtros</button>
+    </app-empty-state>
+  } @else {
+    <app-list-heading
+      [count]="items().length"
+      [supplier]="isSupplier()"
+      [org]="org()"
+      [stamp]="stamp()"
+    />
+    @if (selected().size) {
+      <app-selection-bar
+        [count]="selected().size"
+        (exportCsv)="exportCsv()"
+        (cleared)="clearSelection()"
+      />
+    }
+    <app-ticket-table
+      [items]="pageItems()"
+      [units]="units()"
+      [total]="items().length"
+      [now]="now()"
+      [selected]="selected()"
+      [selectable]="!isSupplier()"
+      (toggle)="toggle($event)"
+      (toggleAll)="toggleAll()"
+    />
+    <app-pager [page]="page()" [pages]="pages()" [summary]="pagerSummary()" (pageChange)="go($event)" />
+  }
+</div>

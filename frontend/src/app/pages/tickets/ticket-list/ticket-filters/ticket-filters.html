@@ -1,0 +1,67 @@
+<form class="card" (ngSubmit)="submit()" role="search">
+  <h2>Busca e filtros</h2>
+  <div class="field" style="margin-top: 14px">
+    <label class="label" for="q">Buscar protocolo ou descrição</label>
+    <div class="search">
+      <app-icon name="search" [size]="16" />
+      <input
+        id="q"
+        name="q"
+        class="bare"
+        [placeholder]="placeholder()"
+        [ngModel]="draft().search"
+        (ngModelChange)="set('search', $event)"
+      />
+    </div>
+  </div>
+  <div class="chips">
+    <app-filter-chip
+      label="Unidade"
+      [value]="draft().unitId"
+      [options]="unitOptions()"
+      (changed)="set('unitId', $event)"
+    />
+    <app-filter-chip
+      label="Status"
+      [value]="draft().status"
+      [options]="statuses"
+      (changed)="set('status', $event)"
+    />
+    <app-filter-chip
+      label="Prioridade"
+      [value]="draft().priority"
+      [options]="priorities"
+      (changed)="set('priority', $event)"
+    />
+    @if (canPickAssignee()) {
+      <app-filter-chip
+        label="Responsável"
+        [value]="draft().assignee"
+        [options]="assignees()"
+        (changed)="set('assignee', $event)"
+      />
+    }
+    <app-filter-chip
+      label="Categoria"
+      [value]="draft().category"
+      [options]="categories"
+      (changed)="set('category', $event)"
+    />
+    <app-period-filter
+      [from]="draft().from"
+      [to]="draft().to"
+      (fromChange)="set('from', $event)"
+      (toChange)="set('to', $event)"
+    />
+  </div>
+  @if (isSupplier()) {
+    <p class="footnote">
+      Escopo fixo: {{ scopeName() }} · atribuídos. Sem seleção de responsável, triagem,
+      administração ou métricas globais.
+    </p>
+  }
+  <div class="row" style="margin-top: 16px">
+    <button type="submit" class="btn btn-primary">Aplicar filtros</button
+    ><button type="button" class="btn" (click)="reset()">Limpar filtros</button>
+  </div>
+</form>

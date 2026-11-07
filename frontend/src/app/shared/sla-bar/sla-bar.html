@@ -1,0 +1,10 @@
+<div
+  class="progress"
+  [class]="'progress ' + tone()"
+  role="progressbar"
+  [attr.aria-valuenow]="width()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
+  <i [style.width.%]="width()"></i>
+</div>

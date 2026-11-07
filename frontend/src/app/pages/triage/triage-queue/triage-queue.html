@@ -1,0 +1,22 @@
+<section class="card">
+  <h2>Fila N1 · {{ items().length }} {{ items().length === 1 ? 'registro' : 'registros' }}</h2>
+  <p class="hint" style="margin: 4px 0 14px">Selecione um registro para revisão</p>
+  <div class="stack-sm">
+    @for (t of items(); track t.id) {
+      <button
+        type="button"
+        class="item"
+        [class.sel]="t.id === selectedId()"
+        (click)="select.emit(t.id)"
+        [attr.aria-pressed]="t.id === selectedId()"
+      >
+        <strong>{{ t.id }}</strong>
+        <span class="ttl">{{ t.title }}</span>
+        <app-status-badge [status]="t.status" />
+        <span class="small muted">{{ stamp(t.openedAt) }} · {{ t.category }} · {{ unit(t) }}</span>
+      </button>
+    } @empty {
+      <p class="muted">Nenhum chamado aguardando triagem</p>
+    }
+  </div>
+</section>

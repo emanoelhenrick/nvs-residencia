@@ -1,0 +1,10 @@
+<app-user-table [users]="users()" [selectedId]="selected()?.id ?? null" (select)="selectedId.set($event)" />
+
+<div class="grid-2" style="margin-top: 16px; align-items: start">
+  @if (selected(); as u) {
+    <app-user-edit-form [user]="u" (saved)="load()" />
+  }
+  <app-role-profiles-card />
+</div>
+
+<app-access-log-card [log]="log()" />

@@ -1,0 +1,18 @@
+@let t = ticket();
+<article class="card q">
+  <div class="top">
+    <span class="small muted">{{ t.id }}</span
+    ><span class="badge" [class]="'badge ' + tag().cls">{{ tag().text }}</span>
+  </div>
+  <h3>{{ t.title }}</h3>
+  <p class="small muted">{{ unit() }} · {{ t.device }}</p>
+  <p class="small muted">{{ t.assignee }}{{ sev() ? ' · ' + sev() : '' }}</p>
+  <div class="row meta">
+    <app-status-badge [status]="t.status" /><span class="badge outline">{{ prio() }}</span
+    ><span class="small" [class]="infoClass()">{{ info() }}</span>
+  </div>
+  <div class="foot">
+    <app-sla-bar [pct]="sla().state === 'sem-sla' ? 0 : sla().pct" [tone]="sla().tone" />
+    <a [routerLink]="['/attendance', t.id]" class="link">Ver chamado →</a>
+  </div>
+</article>

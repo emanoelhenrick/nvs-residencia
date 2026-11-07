@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "temp-project": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,9 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -27,7 +29,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -57,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend:build:production"
+              "buildTarget": "temp-project:build:production"
             },
             "development": {
-              "buildTarget": "frontend:build:development"
+              "buildTarget": "temp-project:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +75,10 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -80,7 +87,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           }
         }
       }

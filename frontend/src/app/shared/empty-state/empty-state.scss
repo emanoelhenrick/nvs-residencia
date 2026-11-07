@@ -1,0 +1,17 @@
+.inner {
+  border: 1px solid var(--c-border-soft);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--c-primary-dark);
+}
+
+h2 {
+  color: var(--c-text);
+}
+
+p {
+  color: var(--c-text);
+}

@@ -1,0 +1,29 @@
+<section class="card">
+  <h2 style="margin-bottom: 8px">Antes de resolver</h2>
+  <p>
+    Registre a solução aplicada e valide a operação com a unidade. A confirmação muda o status para
+    Resolvido, não para Fechado.
+  </p>
+  <p class="footnote">
+    Solução, autor e data serão preservados. Após mais de 48h sem manifestação, haverá passagem para
+    Fechado conforme regra RN08.
+  </p>
+  <div class="row" style="margin-top: 14px">
+    @let c = caps();
+    @if (c?.resolve) {
+      <button type="button" class="btn btn-primary" (click)="action.emit('resolve')">Resolver chamado</button>
+    }
+    @if (c?.resume) {
+      <button type="button" class="btn btn-primary" (click)="action.emit('resume')">Retomar atendimento</button>
+    }
+    @if (c?.sendInfo) {
+      <button type="button" class="btn btn-primary" (click)="action.emit('send-info')">Enviar informação</button>
+    }
+    @if (c?.continue) {
+      <app-continue-button [ticketId]="ticketId()" [primary]="true" (done)="changed.emit()" />
+    }
+    @if (c?.cancel) {
+      <button type="button" class="btn" (click)="action.emit('cancel')">Cancelar com justificativa</button>
+    }
+  </div>
+</section>

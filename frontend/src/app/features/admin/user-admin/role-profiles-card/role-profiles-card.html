@@ -1,0 +1,11 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Permissões por perfil</h2>
+  <div class="stack-sm">
+    @for (r of roles; track r) {
+      <div class="perm">
+        <strong>{{ roleLabel[r] }}</strong>
+        <p>{{ roleDesc[r] }}</p>
+      </div>
+    }
+  </div>
+</section>

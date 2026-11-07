@@ -1,0 +1,17 @@
+:host {
+  display: contents;
+}
+.ev {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 12px;
+  background: #f6f6fa;
+  padding: 12px 14px;
+  border-radius: 6px;
+  align-items: center;
+}
+@media (max-width: 800px) {
+  .ev {
+    grid-template-columns: 1fr;
+  }
+}

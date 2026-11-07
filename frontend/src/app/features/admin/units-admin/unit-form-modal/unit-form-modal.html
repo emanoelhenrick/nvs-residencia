@@ -1,0 +1,50 @@
+<app-modal [title]="unit() ? 'Editar unidade' : 'Cadastrar unidade'" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate id="unit-form">
+    @if (error()) {
+      <p class="field-error" style="margin-bottom: 12px">{{ error() }}</p>
+    }
+    <div class="field">
+      <label class="label" for="uid">ID da unidade *</label
+      ><input
+        id="uid"
+        class="input"
+        formControlName="id"
+        placeholder="Ex.: Loja 050"
+        [class.invalid]="bad('id')"
+      />
+    </div>
+    <div class="field">
+      <label class="label" for="ut">Tipo</label
+      ><select id="ut" class="select" formControlName="type">
+        <option>Loja</option>
+        <option>Centro de distribuição</option>
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="label" for="uc">Cidade *</label
+        ><input id="uc" class="input" formControlName="city" [class.invalid]="bad('city')" />
+      </div>
+      <div class="field">
+        <label class="label" for="uf">UF *</label
+        ><input
+          id="uf"
+          class="input"
+          formControlName="uf"
+          maxlength="2"
+          [class.invalid]="bad('uf')"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label class="label" for="um">Responsável local *</label
+      ><input id="um" class="input" formControlName="manager" [class.invalid]="bad('manager')" />
+    </div>
+  </form>
+  <div footer style="display: contents">
+    <button type="button" class="btn" (click)="closed.emit()">Cancelar</button
+    ><button type="submit" form="unit-form" class="btn btn-primary" [disabled]="busy()">
+      {{ unit() ? 'Salvar' : 'Cadastrar' }}
+    </button>
+  </div>
+</app-modal>

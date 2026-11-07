@@ -1,0 +1,10 @@
+<div class="callout" [class]="'callout ' + variant()" role="status">
+  <app-icon [name]="icon()" [size]="18" />
+  <div class="body">
+    @if (title()) {
+      <strong>{{ title() }}</strong>
+    }
+    <div class="text"><ng-content /></div>
+    <div class="actions"><ng-content select="[actions]" /></div>
+  </div>
+</div>

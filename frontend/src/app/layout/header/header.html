@@ -1,26 +1,35 @@
-<header class="header">
-  <img src="./../../../assets/logo.png" alt="Logo" height="32" />
-  <div class="acoes">
-    <button type="button" class="sino">
-      <svg
-        viewBox="0 0 24 24"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-      </svg>
-      <!-- @if (notificacoes() > 0) {
-      <span class="badge" aria-hidden="true"></span>
-      } -->
+<header class="bar">
+  <div class="left">
+    <button type="button" class="icon-btn" aria-label="Alternar menu" (click)="toggleMenu()">
+      <app-icon name="menu" />
     </button>
-
-    <!-- <span class="usuario">{{ usuario().nome }} · {{ usuario().nivel }}</span> -->
+    <a routerLink="/dashboard" class="logo"
+      ><img src="assets/logo-nexo.png" alt="Nexo Varejo" height="40"
+    /></a>
+    <a routerLink="/dashboard" class="app">Central de operações</a>
+  </div>
+  <div class="right">
+    <div class="rel">
+      <button
+        type="button"
+        class="icon-btn"
+        aria-label="Notificações"
+        (click)="toggleNotifications()"
+      >
+        <app-icon name="bell" />
+        @if (unread() > 0) {
+          <span class="dot">{{ unread() }}</span>
+        }
+      </button>
+      @if (ui.notificationsOpen()) {
+        <app-notifications-panel
+          [notifications]="notifications()"
+          (opened)="open($event)"
+          (readAll)="readAll()"
+          (closed)="ui.notificationsOpen.set(false)"
+        />
+      }
+    </div>
+    <span class="user">{{ label() }}</span>
   </div>
 </header>

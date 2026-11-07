@@ -1,0 +1,23 @@
+@let t = ticket();
+<div class="row-between" style="gap: 12px">
+  <h2>Classificar {{ t.id }}</h2>
+  @if (t.status === 'OPEN') {
+    <button type="button" class="btn btn-sm" (click)="start.emit()">Iniciar triagem</button>
+  }
+</div>
+<div class="row" style="margin: 10px 0 8px; gap: 8px">
+  @if (t.severity) {
+    <span class="badge sev">{{ sevLabel[t.severity] }}</span>
+  }
+  <span class="badge outline">{{
+    t.priority ? 'Prioridade ' + t.priority : 'Prioridade pendente'
+  }}</span>
+</div>
+<p class="small muted" style="margin-bottom: 16px">
+  {{ t.requester.name }} · {{ t.requester.id ?? 'ID não informado' }} · {{ unit() }} ·
+  {{ t.device }} · Contexto somente leitura
+</p>
+<div class="field">
+  <span class="label">Impacto observado</span>
+  <div class="input locked" style="min-height: 76px">{{ t.impact || t.description }}</div>
+</div>

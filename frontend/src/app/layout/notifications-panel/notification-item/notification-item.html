@@ -1,0 +1,10 @@
+@let n = notification();
+<article class="item">
+  <div class="small muted">
+    <app-icon name="bell" [size]="16" /> {{ n.read ? 'Lido' : 'Não lido' }}
+  </div>
+  <strong [style.font-weight]="n.read ? 500 : 700">{{ n.title }}</strong>
+  <p>{{ n.text }}</p>
+  <p class="small muted">{{ n.ticketId }} · {{ fmt(n.at) }}</p>
+  <button type="button" class="btn" (click)="opened.emit(n)">Ver chamado</button>
+</article>

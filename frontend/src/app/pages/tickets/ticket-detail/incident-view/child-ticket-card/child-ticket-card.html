@@ -1,0 +1,24 @@
+@let c = child();
+<div class="child">
+  <div class="head">
+    <app-icon name="link" />
+    <div>
+      <strong>{{ c.id }} · {{ c.title }}</strong>
+      <div class="small">
+        {{ fmt(c.openedAt) }} · {{ c.category }} · {{ c.unitId }} · {{ c.device }}
+      </div>
+      <div class="small muted">
+        Incidente Pai: {{ parentId() }}
+        @if (group(); as g) {
+          · vínculo confirmado por {{ g.by }} às {{ time(g.at) }}
+        }
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <app-status-badge [status]="c.status" />
+    <span class="badge outline">Prioridade {{ c.priority ?? 'pendente' }}</span>
+    <span class="small">{{ c.severity ?? '—' }} · classificação preservada</span>
+  </div>
+  <div><a [routerLink]="['/tickets', c.id]" class="btn">Ver chamado</a></div>
+</div>

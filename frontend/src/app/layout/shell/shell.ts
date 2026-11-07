@@ -1,15 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { UiService } from '../../core/ui/ui.service';
 import { Header } from '../header/header';
 import { SideBar } from '../side-bar/side-bar';
-import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-shell',
-  imports: [SideBar, Header, RouterOutlet],
+  imports: [RouterOutlet, Header, SideBar],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
 export class Shell {
-  protected readonly layout = inject(LayoutService);
+  protected readonly ui = inject(UiService);
 }

@@ -1,0 +1,30 @@
+.panel {
+  position: absolute;
+  right: 0;
+  top: 46px;
+  width: 400px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  z-index: 60;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+footer {
+  margin-top: 14px;
+}

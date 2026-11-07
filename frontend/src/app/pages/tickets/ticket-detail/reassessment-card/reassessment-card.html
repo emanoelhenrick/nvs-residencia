@@ -1,0 +1,13 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Solicitar reavaliação de prioridade</h2>
+  <div class="field" style="margin-bottom: 8px">
+    <label class="label" for="reass">Justificativa *</label>
+    <textarea id="reass" class="textarea" placeholder="Informe o que aconteceu" [ngModel]="text()" (ngModelChange)="text.set($event)"></textarea>
+  </div>
+  <p class="small muted" style="margin-bottom: 12px">Justificativa obrigatória (mín. 10 caracteres). Pedido auditável com autor e data; não altera a prioridade diretamente.</p>
+  <button type="button" class="btn btn-primary" [disabled]="!valid() || busy()" (click)="send()">Enviar para triagem</button>
+  @if (ticket().reassessments.length) {
+    <h3 style="font-size: 14px; margin: 18px 0 8px">Pedidos enviados</h3>
+    @for (r of ticket().reassessments; track r.at) { <p class="small" style="margin-bottom: 6px"><strong>{{ r.by }} · {{ fmt(r.at) }}</strong><br />{{ r.text }}</p> }
+  }
+</section>

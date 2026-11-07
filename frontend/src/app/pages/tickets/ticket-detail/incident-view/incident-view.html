@@ -1,0 +1,18 @@
+@let t = ticket();
+<app-callout variant="info" [title]="children().length + ' chamados vinculados ao Incidente Pai'">
+  O vínculo não altera automaticamente status, severidade ou prioridade dos filhos. Cada chamado mantém
+  seu atendimento e registro de SLA.
+</app-callout>
+@if (t.group; as g) {
+  <app-group-decision-card [group]="g" />
+}
+<section class="card">
+  <h2 style="margin-bottom: 14px">Chamados filhos</h2>
+  <div class="stack">
+    @for (c of children(); track c.id) {
+      <app-child-ticket-card [child]="c" [parentId]="t.id" [group]="t.group" />
+    } @empty {
+      <p class="muted">{{ loaded() ? 'Nenhum chamado vinculado ainda.' : 'Carregando chamados filhos…' }}</p>
+    }
+  </div>
+</section>

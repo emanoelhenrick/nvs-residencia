@@ -1,0 +1,16 @@
+.box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-field);
+  border-radius: 6px;
+  background: #f6f7fb;
+  color: var(--c-muted);
+  min-height: 41px;
+}
+
+span {
+  color: var(--c-text);
+}

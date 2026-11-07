@@ -1,0 +1,21 @@
+<section class="card" style="margin-top: 16px">
+  <div class="row-between" style="margin-bottom: 14px">
+    <div class="row" style="gap: 10px">
+      <span class="alert-ic"><app-icon name="alert" [size]="26" /></span>
+      <div>
+        <h2 style="color: var(--c-primary-dark)">Chamados que precisam de atenção</h2>
+        <p class="hint">Prioridade, status e SLA para orientar a próxima ação.</p>
+      </div>
+    </div>
+    <a routerLink="/list-tickets" class="link">Ver todos os chamados →</a>
+  </div>
+  @if (rows().length) {
+    <div class="att-grid">
+      @for (r of rows(); track r.t.id) {
+        <app-attention-card [ticket]="r.t" [sla]="r.sla" [units]="units()" [now]="now()" />
+      }
+    </div>
+  } @else {
+    <p class="muted">Nenhum chamado exige atenção neste momento.</p>
+  }
+</section>

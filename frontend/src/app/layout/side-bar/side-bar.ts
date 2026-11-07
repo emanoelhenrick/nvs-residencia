@@ -1,30 +1,37 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { LayoutService } from '../layout.service';
-
-export interface NavItem {
-  label: string;
-  route: string;
-  icon?: string;
-}
-
-export const NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
-  { label: 'Lista de Chamados', route: '/list-tickets', icon: 'confirmation_number' },
-  { label: 'Abrir chamado', route: '/new-ticket', icon: 'add_circle' },
-  { label: 'Triagem', route: '/triage', icon: 'filter_alt' },
-  { label: 'Atendimento', route: '/attendance', icon: 'support_agent' },
-];
+import { NAV_ITEMS } from '../../constants/navigation.constants';
+import { SessionStore } from '../../core/session/session.store';
+import { UiService } from '../../core/ui/ui.service';
+import { Icon } from '../../shared/icon/icon';
 
 @Component({
   selector: 'app-side-bar',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule],
+  imports: [RouterLink, RouterLinkActive, Icon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })
 export class SideBar {
-  protected readonly layout = inject(LayoutService);
-  protected readonly items = NAV_ITEMS;
+  protected readonly ui = inject(UiService);
+  private readonly _session = inject(SessionStore);
+
+  protected readonly workspace = computed(() => {
+    const u = this._session.user();
+    return u?.unitId ?? u?.supplier ?? 'Central de operações';
+  });
+
+  protected readonly nav = computed(() => {
+    const role = this._session.role();
+    return role ? NAV_ITEMS.filter((i) => i.roles.includes(role)) : [];
+  });
+
+  protected close(): void {
+    this.ui.mobileMenu.set(false);
+  }
+
+  protected logout(): void {
+    this.close();
+    this._session.end();
+  }
 }

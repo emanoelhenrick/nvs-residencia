@@ -1,86 +1,97 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { injectNow } from '../../core/clock/inject-interval';
+import { ToastService } from '../../core/ui/toast.service';
+import { ISlaView, ITicket, IUnit, SlaState } from '../../models';
+import { TicketsService } from '../../services/tickets.service';
+import { UnitsService } from '../../services/units.service';
+import { Callout } from '../../shared/callout/callout';
+import { EmptyState } from '../../shared/empty-state/empty-state';
+import { Icon } from '../../shared/icon/icon';
+import { PageHeader } from '../../shared/page-header/page-header';
+import { fmtDateTime, toIso } from '../../utils/dates';
+import { slaView } from '../../utils/sla';
+import { isActive } from '../../utils/ticket';
+import { KpiCard } from '../dashboard/kpi-card/kpi-card';
+import { AttendanceFilters, IAttendanceFilters } from './attendance-filters/attendance-filters';
+import { QueueCard } from './queue-card/queue-card';
 
-export interface TimelineEntry {
-  date: string;
-  author: string;
-  action: string;
-  details: string;
+const ORDER: Record<SlaState, number> = {
+  violado: 0,
+  atencao: 1,
+  'dentro-prazo': 2,
+  pausado: 3,
+  'sem-sla': 4,
+  concluido: 5,
+  preservado: 5,
+};
+
+interface IQueueRow {
+  t: ITicket;
+  sla: ISlaView;
 }
 
 @Component({
   selector: 'app-attendance',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  imports: [PageHeader, EmptyState, KpiCard, QueueCard, AttendanceFilters, Callout, Icon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './attendance.html',
   styleUrl: './attendance.scss',
 })
 export class Attendance {
-  private fb = inject(FormBuilder);
+  private readonly _ticketsService = inject(TicketsService);
+  private readonly _unitsService = inject(UnitsService);
+  private readonly _toastService = inject(ToastService);
 
-  public readonly lastUpdated: string = '03/10/2026 às 14:25';
-  public readonly ticketId: string = 'NX-2026-01842';
+  protected readonly now = injectNow();
+  protected readonly tickets = signal<ITicket[]>([]);
+  protected readonly units = signal<IUnit[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal(false);
+  protected readonly stamp = signal(fmtDateTime(toIso(Date.now())));
+  protected readonly filters = signal<IAttendanceFilters>({ search: '', priority: '', slaState: '', assignee: '' });
 
-  // Histórico / Timeline
-  public readonly timelineLogs: TimelineEntry[] = [
-    {
-      date: '03/10/2026 · 10:42',
-      author: 'Marina Costa',
-      action: 'Foto da mensagem de erro solicitada',
-      details: 'Status Em atendimento → Aguardando Solicitante. Início de pausa 10:42; fim 11:05.',
-    },
-    {
-      date: '03/10/2026 · 11:05',
-      author: 'Ana Silva / Marina Costa',
-      action: 'Foto enviada; atendimento retomado',
-      details: 'Aguardando Solicitante → Em atendimento. Motivo da pausa preservado; fim registrado às 11:05.',
-    },
-  ];
-
-  // Formulário de Comentário e Anexo
-  public commentForm: FormGroup = this.fb.group({
-    commentText: [
-      'Foto recebida. Vamos reiniciar o serviço local do PDV-07 e validar uma venda teste com a unidade.',
-      [Validators.required],
-    ],
+  private readonly _all = computed<IQueueRow[]>(() =>
+    this.tickets()
+      .filter((t) => t.kind === 'chamado' && isActive(t.status) && t.status !== 'OPEN')
+      .map((t) => ({ t, sla: slaView(t, this.now()) })),
+  );
+  protected readonly assignees = computed(() => [...new Set(this._all().map((r) => r.t.assignee))].sort());
+  protected readonly rows = computed(() => {
+    const f = this.filters();
+    const q = f.search.trim().toLowerCase();
+    return this._all()
+      .filter(
+        (r) =>
+          (!q || [r.t.id, r.t.title, r.t.unitId, r.t.device].some((v) => v.toLowerCase().includes(q))) &&
+          (!f.priority || r.t.priority === f.priority) &&
+          (!f.slaState || r.sla.state === f.slaState) &&
+          (!f.assignee || r.t.assignee === f.assignee),
+      )
+      .sort((a, b) => ORDER[a.sla.state] - ORDER[b.sla.state] || b.sla.pct - a.sla.pct);
   });
+  protected readonly violated = computed(() => this._all().filter((r) => r.sla.state === 'violado').length);
+  protected readonly attention = computed(() => this._all().filter((r) => r.sla.state === 'atencao').length);
+  protected readonly working = computed(() => this._all().filter((r) => r.t.status === 'IN_PROGRESS').length);
 
-  // Formulário de Espera
-  public waitForm: FormGroup = this.fb.group({
-    esperaState: ['Aguardando Terceiro/Fornecedor', [Validators.required]],
-    esperaMotivo: ['', [Validators.required]],
-  });
-
-  // Formulário de Resolução
-  public resolveForm: FormGroup = this.fb.group({
-    solucaoAplicada: ['', [Validators.required]],
-  });
-
-  public onPublishComment(): void {
-    if (this.commentForm.valid) {
-      console.log('Comentário publicado:', this.commentForm.value);
-    }
+  constructor() {
+    this._unitsService.list().subscribe({ next: (l) => this.units.set(l), error: () => {} });
+    this.load();
   }
 
-  public onRegisterWait(): void {
-    if (this.waitForm.valid) {
-      console.log('Espera registrada:', this.waitForm.value);
-    }
-  }
-
-  public onResolveTicket(): void {
-    if (this.resolveForm.valid) {
-      console.log('Chamado resolvido:', this.resolveForm.value);
-    }
-  }
-
-  public onReviewEscalation(): void {
-    console.log('Solicitar revisão de escalonamento');
-  }
-
-  public onCancelTicket(): void {
-    console.log('Cancelar chamado com justificativa');
+  protected load(notify = false): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this._ticketsService.list().subscribe({
+      next: (list) => {
+        this.tickets.set(list);
+        this.stamp.set(fmtDateTime(toIso(Date.now())));
+        this.loading.set(false);
+        if (notify) this._toastService.show('Fila atualizada.', 'info');
+      },
+      error: () => {
+        this.error.set(true);
+        this.loading.set(false);
+      },
+    });
   }
 }

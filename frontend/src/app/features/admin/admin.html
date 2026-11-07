@@ -1,0 +1,40 @@
+<div class="page">
+  <app-page-header
+    title="Administração"
+    subtitle="Usuários, unidades, permissões e regras de cobertura · Acesso exclusivo de Admin"
+  >
+    <button type="button" class="btn btn-primary" (click)="adding.set(true)">
+      Adicionar usuário
+    </button>
+  </app-page-header>
+  <div class="tabs" role="tablist" style="margin-bottom: 16px">
+    @for (t of tabs; track t.id) {
+      <button
+        type="button"
+        role="tab"
+        [class.active]="tab() === t.id"
+        [attr.aria-selected]="tab() === t.id"
+        (click)="tab.set(t.id)"
+      >
+        {{ t.label }}
+      </button>
+    }
+  </div>
+  @switch (tab()) {
+    @case ('usuarios') {
+      <app-user-admin [version]="usersVersion()" />
+    }
+    @case ('unidades') {
+      <app-units-admin />
+    }
+    @case ('permissoes') {
+      <app-permissions-admin />
+    }
+    @case ('sla') {
+      <app-sla-params />
+    }
+  }
+  @if (adding()) {
+    <app-user-modal (created)="onUserCreated()" (closed)="adding.set(false)" />
+  }
+</div>

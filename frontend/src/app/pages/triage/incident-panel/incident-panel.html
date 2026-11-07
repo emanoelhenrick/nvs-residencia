@@ -1,0 +1,31 @@
+<app-incident-suggestion-card
+  [group]="group()"
+  [unit]="unit()"
+  (review)="reviewing.set(true)"
+  (discard)="discarding.set(true)"
+/>
+
+@if (reviewing()) {
+  <app-incident-evidence-review [group]="group()" [parents]="parents()" (openLink)="linking.set(true)" />
+}
+
+@if (linking()) {
+  <app-incident-link-modal
+    [group]="group()"
+    [parents]="parents()"
+    [who]="who()"
+    [busy]="busy()"
+    (confirmed)="link($event)"
+    (closed)="linking.set(false)"
+  />
+}
+@if (discarding()) {
+  <app-justification-modal
+    title="Descartar sugestão de incidente?"
+    intro="A sugestão deixará de aparecer. A justificativa será registrada no histórico de cada chamado; nenhum status, severidade ou prioridade será alterado."
+    label="Justificativa do descarte"
+    confirmText="Descartar sugestão"
+    (confirmed)="discard($event)"
+    (closed)="discarding.set(false)"
+  />
+}

@@ -1,0 +1,67 @@
+@if (selectable()) {
+  <label class="check all"
+    ><input type="checkbox" [checked]="allSelected()" (change)="toggleAll.emit()" /> Selecionar os
+    {{ total() }} chamados</label
+  >
+}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        @if (selectable()) {
+          <th class="ck"><span class="sr-only">Seleção</span></th>
+        }
+        <th>Protocolo</th>
+        <th>Resumo / responsável</th>
+        <th>Unidade</th>
+        <th>Status</th>
+        <th>Prioridade</th>
+        <th>TMS / situação</th>
+        <th>TMS / solução</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (t of items(); track t.id) {
+        <tr [class.selected]="selected().has(t.id)">
+          @if (selectable()) {
+            <td class="ck">
+              <input
+                type="checkbox"
+                [checked]="selected().has(t.id)"
+                (change)="toggle.emit(t.id)"
+                [attr.aria-label]="'Selecionar ' + t.id"
+              />
+            </td>
+          }
+          <td>
+            <a [routerLink]="['/tickets', t.id]" class="proto">{{ t.id }}</a>
+          </td>
+          <td>
+            <div class="sum">
+              <a [routerLink]="['/tickets', t.id]" class="title">{{ t.title }}</a
+              ><span>{{ t.category }}{{ t.severity ? ' · ' + sev[t.severity] : '' }}</span
+              ><span>{{ t.assignee }}</span>
+            </div>
+          </td>
+          <td>{{ unit(t) }}</td>
+          <td>
+            @if (t.kind === 'incidente-pai') {
+              <span class="badge lav">Incidente Pai</span>
+            } @else {
+              <app-status-badge [status]="t.status" />
+            }
+          </td>
+          <td>{{ t.priority ?? '—' }}</td>
+          <td>{{ tmr(t) }}</td>
+          <td class="sla">
+            <span>{{ sla(t).listLabel }}</span
+            ><app-sla-bar
+              [pct]="sla(t).state === 'sem-sla' ? 0 : sla(t).pct"
+              [tone]="sla(t).tone"
+            />
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

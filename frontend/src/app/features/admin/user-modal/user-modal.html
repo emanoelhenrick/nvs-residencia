@@ -1,0 +1,64 @@
+<app-modal title="Adicionar usuário" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="user-form">
+    @if (error()) {
+      <p class="field-error" style="margin-bottom: 12px">{{ error() }}</p>
+    }
+
+    <div class="field">
+      <label class="label" for="un">Nome *</label>
+      <input id="un" class="input" formControlName="name" [class.invalid]="bad('name')" />
+      @if (bad('name')) {
+        <span class="field-error">Informe o nome.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="label" for="ue">E-mail corporativo *</label>
+      <input
+        id="ue"
+        type="email"
+        class="input"
+        formControlName="email"
+        [class.invalid]="bad('email')"
+      />
+      @if (bad('email')) {
+        <span class="field-error">Informe um e-mail válido.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="label" for="ur">Perfil *</label>
+      <select id="ur" class="select" formControlName="role">
+        @for (r of roles; track r) {
+          <option [value]="r">{{ label[r] }}</option>
+        }
+      </select>
+    </div>
+
+    @if (form.controls.role.value === 'REQUESTER') {
+      <div class="field">
+        <label class="label" for="uu">Unidade *</label>
+        <select id="uu" class="select" formControlName="unitId">
+          <option value="">Selecione</option>
+          @for (u of units(); track u.id) {
+            <option [value]="u.id">{{ u.id }} · {{ u.city }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    @if (form.controls.role.value === 'SUPPLIER') {
+      <div class="field">
+        <label class="label" for="us">Fornecedor *</label>
+        <input id="us" class="input" formControlName="supplier" placeholder="Ex.: TecPrint" />
+      </div>
+    }
+  </form>
+
+  <div footer style="display: contents">
+    <button type="button" class="btn" (click)="closed.emit()">Cancelar</button>
+    <button type="submit" form="user-form" class="btn btn-primary" [disabled]="busy()">
+      Adicionar
+    </button>
+  </div>
+</app-modal>

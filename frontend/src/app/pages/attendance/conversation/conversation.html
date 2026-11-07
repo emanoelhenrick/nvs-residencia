@@ -1,0 +1,26 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Conversa e evidências</h2>
+  <ul class="timeline">
+    @for (e of events(); track $index) {
+      <li>
+        <div class="meta">{{ stamp(e.at) }} · {{ e.kind === 'status' ? 'Registro de status' : e.title }}</div>
+        @if (e.kind === 'status') { <div class="what">{{ e.title }}</div><div>{{ e.text }}</div> }
+        @else if (e.kind === 'evidence') { <div class="ev"><app-icon name="paperclip" /> {{ e.text }}</div> }
+        @else { <div class="what">{{ e.text }}</div> }
+      </li>
+    } @empty { <li class="muted">Nenhuma interação registrada ainda.</li> }
+  </ul>
+  @if (editable()) {
+    <div style="margin-top: 14px">
+      <app-comment-form
+        [ticketId]="ticket().id"
+        fieldLabel="Comentário de atendimento"
+        placeholder="Registre o diagnóstico ou a ação realizada"
+        evidenceTitle="Adicionar evidência do diagnóstico"
+        submitLabel="Publicar comentário"
+        successMessage="Comentário publicado."
+        (posted)="changed.emit()"
+      />
+    </div>
+  }
+</section>

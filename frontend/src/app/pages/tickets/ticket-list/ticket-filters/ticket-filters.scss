@@ -1,0 +1,4 @@
+.search { display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--c-field); border-radius: 6px; color: var(--c-muted); background: #fff; }
+.search:focus-within { outline: 2px solid var(--c-primary); }
+.bare { border: 0; outline: 0; padding: 10px 0; flex: 1; font: inherit; background: transparent; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }

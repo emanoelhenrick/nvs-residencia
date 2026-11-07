@@ -1,0 +1,46 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Registrar espera</h2>
+  <div class="field">
+    <label class="label" for="wk">Estado de espera *</label>
+    <select id="wk" class="select" [ngModel]="kind()" (ngModelChange)="kind.set($event)">
+      <option value="third-party">Aguardando Terceiro/Fornecedor</option>
+      <option value="requester">Aguardando Solicitante</option>
+    </select>
+  </div>
+  @if (needsSupplier()) {
+    <div class="field">
+      <label class="label" for="ws">Fornecedor *</label>
+      <select
+        id="ws"
+        class="select"
+        [ngModel]="supplierId()"
+        (ngModelChange)="supplierId.set($event)"
+      >
+        <option value="">Selecione</option>
+        @for (s of suppliers(); track s.id) {
+          <option [value]="s.id">{{ s.supplier }} · {{ s.name }}</option>
+        }
+      </select>
+    </div>
+  }
+  <div class="field">
+    <label class="label" for="wm">Motivo da espera *</label>
+    <textarea
+      id="wm"
+      class="textarea"
+      placeholder="Descreva a informação ou ação externa pendente"
+      [ngModel]="motive()"
+      (ngModelChange)="motive.set($event)"
+    ></textarea>
+  </div>
+  <p class="small muted" style="margin-bottom: 12px">
+    Pausa permitida somente em Aguardando Solicitante ou Terceiro/Fornecedor. Início, motivo e fim
+    ficam registrados; não há nova pausa ativa.
+    @if (!enabled()) {
+      Disponível apenas com o chamado Em atendimento.
+    }
+  </p>
+  <button type="button" class="btn btn-primary" [disabled]="!valid() || busy()" (click)="submit()">
+    Registrar espera
+  </button>
+</section>

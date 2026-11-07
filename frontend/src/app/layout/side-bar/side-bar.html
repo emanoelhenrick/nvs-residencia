@@ -1,30 +1,25 @@
-<nav class="sidebar" [class.collapsed]="!layout.sidebarOpen()" aria-label="Navegação principal">
-  <div class="sidebar-header">
-    <button
-      type="button"
-      class="toggle-btn"
-      [attr.aria-label]="layout.sidebarOpen() ? 'Recolher menu' : 'Expandir menu'"
-      [attr.aria-expanded]="layout.sidebarOpen()"
-      (click)="layout.toggleSidebar()"
-    >
-      <mat-icon>{{ layout.sidebarOpen() ? 'chevron_left' : 'menu' }}</mat-icon>
-    </button>
+<nav class="side" [class.open]="ui.mobileMenu()" aria-label="Navegação principal">
+  <div>
+    <div class="ws">
+      <span class="small muted caps">Espaço de trabalho</span>
+      <strong>{{ workspace() }}</strong>
+    </div>
+    <ul>
+      @for (i of nav(); track i.path) {
+        <li>
+          <a [routerLink]="i.path" routerLinkActive="active" [title]="i.label" (click)="close()">
+            <app-icon [name]="i.icon" />
+            <span class="lbl">{{ i.label }}</span>
+            <app-icon class="tick" name="check" [size]="16" />
+          </a>
+        </li>
+      }
+    </ul>
   </div>
-
-  <ul class="nav-list">
-    @for (item of items; track item.route) {
-    <li>
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        [attr.title]="!layout.sidebarOpen() ? item.label : null"
-      >
-        @if (item.icon) {
-        <mat-icon class="icon" aria-hidden="true">{{ item.icon }}</mat-icon>
-        }
-        <span class="label">{{ item.label }}</span>
-      </a>
-    </li>
-    }
-  </ul>
+  <div>
+    <p class="small muted note">
+      Consulta restrita ao seu perfil. Decisões ficam registradas no histórico.
+    </p>
+    <button type="button" class="logout" (click)="logout()">Sair da sessão</button>
+  </div>
 </nav>

@@ -1,0 +1,27 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Permissões por perfil</h2>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Perfil</th>
+          <th>Descrição</th>
+          <th>Escopo de consulta</th>
+          <th>Telas</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of roles; track r) {
+          <tr>
+            <td>
+              <strong>{{ label[r] }}</strong>
+            </td>
+            <td>{{ desc[r] }}</td>
+            <td>{{ scope[r] }}</td>
+            <td>{{ screens(r) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

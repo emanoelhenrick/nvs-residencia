@@ -1,0 +1,25 @@
+@switch (kind()) {
+  @case ('cancel') {
+    <app-cancel-modal [ticket]="ticket()" (done)="done.emit()" (closed)="closed.emit()" />
+  }
+  @case ('resolve') {
+    <app-resolve-modal [ticket]="ticket()" (done)="done.emit()" (closed)="closed.emit()" />
+  }
+  @case ('reopen') {
+    <app-reopen-modal [ticket]="ticket()" (done)="done.emit()" (closed)="closed.emit()" />
+  }
+  @case ('escalation') {
+    <app-escalation-modal
+      [ticket]="ticket()"
+      [now]="now()"
+      (done)="done.emit()"
+      (closed)="closed.emit()"
+    />
+  }
+  @case ('resume') {
+    <app-resume-modal [ticket]="ticket()" (done)="done.emit()" (closed)="closed.emit()" />
+  }
+  @case ('send-info') {
+    <app-send-info-modal [ticket]="ticket()" (done)="done.emit()" (closed)="closed.emit()" />
+  }
+}

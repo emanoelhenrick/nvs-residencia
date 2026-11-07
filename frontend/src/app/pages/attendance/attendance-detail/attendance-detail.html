@@ -1,0 +1,66 @@
+@if (ticket(); as t) {
+  <div class="page">
+    <a routerLink="/attendance" class="back small">← Voltar à fila</a>
+    <app-page-header
+      title="Atendimento"
+      [subtitle]="'Seu chamado atribuído · ' + t.id + ' · Visão de ' + stamp()"
+    />
+    <div class="stack">
+      @if (inTriage()) {
+        <app-callout variant="info" title="Chamado ainda em triagem">
+          Classifique e atribua este chamado na tela de Triagem para iniciar o atendimento e a contagem
+          do SLA.
+          <a actions routerLink="/triage" class="btn btn-sm">Ir para a triagem</a>
+        </app-callout>
+      }
+
+      <app-attendance-summary-card [ticket]="t" [line]="line()" [firstAssign]="firstAssign()" />
+
+      <div class="grid-2 top">
+        <app-sla-panel [ticket]="t" [now]="now()" />
+        <app-first-response-card [response]="t.sla.firstResponse" />
+      </div>
+
+      <div class="grid-main">
+        <app-conversation
+          [ticket]="t"
+          [editable]="!!caps()?.comment && !inTriage()"
+          (changed)="reload()"
+        />
+        <aside class="stack">
+          @if (canWait()) {
+            <app-wait-card [ticket]="t" [enabled]="!!caps()?.wait" (changed)="reload()" />
+          }
+          <app-escalation-card [enabled]="!!caps()?.escalate" (review)="modal.set('escalation')" />
+        </aside>
+      </div>
+
+      <div class="grid-2" style="align-items: start">
+        <app-resolve-actions-card
+          [ticketId]="t.id"
+          [caps]="caps()"
+          (action)="modal.set($event)"
+          (changed)="reload()"
+        />
+      </div>
+    </div>
+  </div>
+  @if (modal(); as m) {
+    <app-ticket-actions
+      [ticket]="t"
+      [kind]="m"
+      [now]="now()"
+      (closed)="modal.set(null)"
+      (done)="onActionDone()"
+    />
+  }
+} @else if (loading()) {
+  <div class="page"><p class="muted" role="status">Carregando chamado…</p></div>
+} @else {
+  <div class="page">
+    <app-empty-state icon="alert" title="Chamado não encontrado">
+      O protocolo {{ id() }} não está disponível para o seu perfil.
+      <a actions routerLink="/attendance" class="btn btn-primary">Voltar à fila</a>
+    </app-empty-state>
+  </div>
+}

@@ -1,0 +1,13 @@
+<div class="tabs" role="tablist">
+  @for (t of tabs; track t.id) {
+    <button
+      type="button"
+      role="tab"
+      [class.active]="tab() === t.id"
+      [attr.aria-selected]="tab() === t.id"
+      (click)="go(t.id)"
+    >
+      {{ t.label }}
+    </button>
+  }
+</div>

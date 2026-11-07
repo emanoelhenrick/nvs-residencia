@@ -1,0 +1,15 @@
+<div class="box">
+  <app-icon name="paperclip" />
+  <div class="info">
+    <strong>{{ evidence().name }}</strong>
+    <span class="small muted">{{ evidence().sizeKb }} KB · {{ evidence().note }} {{ fmt(evidence().at) }}</span>
+    <div><button type="button" class="btn btn-sm" (click)="open.set(true)">{{ buttonLabel() }}</button></div>
+  </div>
+</div>
+@if (open()) {
+  <app-modal [title]="evidence().name" (closed)="open.set(false)">
+    <p>{{ evidence().sizeKb }} KB · enviado por {{ evidence().by }} em {{ fmt(evidence().at) }}.</p>
+    <p class="muted" style="margin-top:8px">Pré-visualização indisponível na demonstração: os arquivos não são armazenados, apenas seus metadados.</p>
+    <button footer type="button" class="btn btn-primary" (click)="open.set(false)">Fechar</button>
+  </app-modal>
+}

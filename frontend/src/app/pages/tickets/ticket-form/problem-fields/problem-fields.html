@@ -1,0 +1,103 @@
+<section class="card" [formGroup]="form()">
+          <h2 style="margin-bottom: 16px">Informações do problema</h2>
+          @if (needsUnit()) {
+            <div class="field">
+              <label class="label" for="unitId">Unidade do chamado *</label>
+              <select
+                id="unitId"
+                class="select"
+                formControlName="unitId"
+                [class.invalid]="invalid('unitId')"
+              >
+                <option value="">Selecione</option>
+                @for (u of units(); track u.id) {
+                  <option [value]="u.id">{{ u.id }} · {{ u.city }}</option>
+                }
+              </select>
+              @if (invalid('unitId')) {
+                <span class="field-error"
+                  ><app-icon name="info" [size]="14" /> Selecione a unidade do chamado.</span
+                >
+              }
+            </div>
+          }
+          <div class="field">
+            <label class="label" for="category">Categoria (ilustrativa) *</label>
+            <select
+              id="category"
+              class="select"
+              formControlName="category"
+              [class.invalid]="invalid('category')"
+            >
+              <option value="">Selecione</option>
+              @for (c of categories(); track c) {
+                <option [value]="c">{{ c }}{{ c === 'PDV' ? ' — exemplo' : '' }}</option>
+              }
+            </select>
+            @if (invalid('category')) {
+              <span class="field-error"
+                ><app-icon name="info" [size]="14" /> Selecione a categoria do problema.</span
+              >
+            }
+          </div>
+          <div class="field">
+            <label class="label" for="title">Resumo</label
+            ><input
+              id="title"
+              class="input"
+              formControlName="title"
+              maxlength="90"
+              placeholder="Ex.: Venda não finaliza no terminal"
+            />
+          </div>
+          <div class="field">
+            <label class="label" for="description">Descrição do problema *</label>
+            <textarea
+              id="description"
+              class="textarea"
+              formControlName="description"
+              placeholder="Descreva o que aconteceu"
+              [class.invalid]="invalid('description')"
+            ></textarea>
+            @if (invalid('description')) {
+              <span class="field-error"
+                ><app-icon name="info" [size]="14" /> Informe a descrição do problema antes de
+                enviar.</span
+              >
+            }
+          </div>
+          <div class="field">
+            <label class="label" for="impact">Impacto observado *</label>
+            <textarea
+              id="impact"
+              class="textarea"
+              formControlName="impact"
+              placeholder="Qual o efeito na operação?"
+              [class.invalid]="invalid('impact')"
+            ></textarea>
+            @if (invalid('impact')) {
+              <span class="field-error"
+                ><app-icon name="info" [size]="14" /> Informe o impacto observado.</span
+              >
+            }
+          </div>
+          <label class="check" style="margin: 0 0 14px 6px"
+            ><input type="checkbox" formControlName="affectsOthers" /> Afeta outros
+            dispositivos</label
+          >
+          <div class="field" style="margin-bottom: 0">
+            <label class="label" for="errorCode">Código de erro *</label>
+            <input
+              id="errorCode"
+              class="input"
+              formControlName="errorCode"
+              placeholder="Ex.: E204"
+              [class.invalid]="invalid('errorCode')"
+            />
+            @if (invalid('errorCode')) {
+              <span class="field-error"
+                ><app-icon name="info" [size]="14" /> Informe o código de erro (ou “N/A”).</span
+              >
+            }
+          </div>
+        </section>

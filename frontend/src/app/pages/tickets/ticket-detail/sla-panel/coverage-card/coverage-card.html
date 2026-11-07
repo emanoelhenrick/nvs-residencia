@@ -1,0 +1,22 @@
+@let t = ticket();
+@let p = params();
+<div class="card c">
+  <h2>Cobertura {{ t.priority }}</h2>
+  <p class="strong" style="margin-top: 10px">{{ p.coverage }}</p>
+  <p style="margin-top: 8px">
+    TMR: {{ dur(p.tmr) }} · primeira resposta<br />TMS: {{ dur(p.tms) }} · solução
+  </p>
+  @if (t.sla.firstResponse; as fr) {
+    <p class="small muted" style="margin-top: 8px">
+      Primeira resposta às {{ time(fr.at) }}, {{ dur(respMin() ?? 0) }} após abertura.
+      @if (t.sla.pausedSince; as paused) {
+        Pausa iniciada às {{ time(paused) }}.
+      }
+    </p>
+  }
+  @if (preserved.includes(t.status)) {
+    <p class="small muted" style="margin-top: 8px">
+      Tempo acumulado preservado no registro de SLA. Calendário e regra de saldo pós-resolução ainda a validar.
+    </p>
+  }
+</div>

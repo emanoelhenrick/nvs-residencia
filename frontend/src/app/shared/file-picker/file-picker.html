@@ -1,0 +1,5 @@
+<button type="button" class="btn" (click)="fileEl.click()">{{ label() }}</button>
+<input #fileEl type="file" hidden [accept]="accept()" (change)="onChange($event)" />
+@if (error()) {
+  <div class="field-error">{{ error() }}</div>
+}

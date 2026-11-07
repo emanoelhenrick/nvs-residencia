@@ -1,0 +1,18 @@
+<a class="att" [routerLink]="['/tickets', ticket().id]">
+  <div class="top">
+    <span class="pill" [class]="'pill ' + (ticket().priority ?? '')">{{ ticket().priority }}</span>
+    <span class="id">{{ ticket().id }}</span>
+    <app-icon class="go" name="chevron-right" [size]="16" />
+  </div>
+  <strong>{{ ticket().title }}</strong>
+  <span class="small muted">{{ unit() }} · Resp.: {{ ticket().assignee }}</span>
+  <div class="row" style="gap: 8px"><app-status-badge [status]="ticket().status" /><span class="badge red">Prioridade {{ ticket().priority ?? "—" }}</span></div>
+  @if (sla().state === 'pausado') {
+    <div class="box"><strong>SLA pausado desde {{ pausedSince() }}</strong><span class="small muted">{{ waitHint() }}</span>
+      <div class="two small"><span>Tempo de pausa<br /><b>{{ pausedFor() }}</b></span><span>Tempo total decorrido<br /><b>{{ total() }}</b></span></div></div>
+  } @else {
+    <div class="box"><span class="small muted">SLA de resposta</span>
+      <strong [class.red]="sla().state === 'violado'" [class.amber]="sla().state === 'atencao'">{{ text() }}</strong>
+      <div class="bar"><app-sla-bar [pct]="sla().pct" [tone]="sla().tone" /><span class="small strong">{{ sla().pct }}%</span></div></div>
+  }
+</a>

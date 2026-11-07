@@ -1,0 +1,21 @@
+@let t = ticket();
+<div class="pending">
+  <app-icon name="paperclip" />
+  <div>
+    @if (t.status === 'WAITING_REQUESTER') {
+      <strong>{{ t.sla.pauseReason }} · solicitada às {{ time(t.sla.pausedSince ?? t.openedAt) }}</strong>
+      <div class="small">Aguardando envio do solicitante</div>
+      @if (caps().sendInfo) {
+        <button type="button" class="btn btn-sm" style="margin-top: 8px" (click)="sendInfo.emit()">
+          Enviar informação
+        </button>
+      }
+    } @else {
+      <strong>Laudo técnico pendente</strong>
+      <div class="small">{{ t.supplier?.org }} · informação externa solicitada</div>
+      @if (caps().attachLaudo) {
+        <div style="margin-top: 8px"><app-file-picker (picked)="laudo.emit($event)" /></div>
+      }
+    }
+  </div>
+</div>

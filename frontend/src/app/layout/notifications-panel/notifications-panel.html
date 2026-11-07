@@ -1,0 +1,24 @@
+<section class="panel" aria-label="Central de notificações">
+  <header>
+    <div>
+      <h2>Notificações</h2>
+      <p class="small muted">
+        {{ unread() }} não {{ unread() === 1 ? 'lida' : 'lidas' }} · mais recentes primeiro
+      </p>
+    </div>
+    <button type="button" class="btn" (click)="closed.emit()">Fechar</button>
+  </header>
+  <div class="list">
+    @for (n of notifications(); track n.id) {
+      <app-notification-item [notification]="n" (opened)="opened.emit($event)" />
+    } @empty {
+      <p class="muted" style="padding: 16px 0">Nenhuma notificação.</p>
+    }
+  </div>
+  <footer class="small muted row-between">
+    <span>Ler uma notificação não altera o status do chamado.</span>
+    @if (unread() > 0) {
+      <button type="button" class="link" (click)="readAll.emit()">Marcar todas como lidas</button>
+    }
+  </footer>
+</section>

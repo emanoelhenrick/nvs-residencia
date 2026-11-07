@@ -1,0 +1,8 @@
+<label class="chip"
+  ><app-icon name="filter" [size]="16" /> {{ label() }}: {{ current() }}
+  <select [attr.aria-label]="label()" (change)="changed.emit($any($event.target).value)">
+    @for (o of options(); track o.value) {
+      <option [value]="o.value" [selected]="o.value === value()">{{ o.label }}</option>
+    }
+  </select></label
+>

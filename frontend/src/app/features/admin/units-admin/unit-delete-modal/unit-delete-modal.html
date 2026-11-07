@@ -1,0 +1,15 @@
+<app-modal [title]="'Excluir unidade'" (closed)="closed.emit()">
+  <div>
+    <h3>Confirmar exclusão</h3>
+    <p>
+      Tem certeza que deseja excluir a unidade <strong>{{ unit()?.id }}</strong
+      >?
+    </p>
+  </div>
+  <div class="modal-actions">
+    <button type="button" class="btn" [disabled]="busy()" (click)="closed.emit()">Cancelar</button>
+    <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="confirm()">
+      {{ busy() ? 'Excluindo...' : 'Excluir' }}
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,33 @@
+@let t = ticket();
+<app-callout variant="success" title="Chamado criado">
+  O chamado {{ t.id }} foi registrado em {{ fmt(t.openedAt) }}.
+  <a actions [routerLink]="['/tickets', t.id]" class="btn btn-sm">Ver chamado</a>
+</app-callout>
+<section class="card" style="margin-top: 16px">
+  <h2 style="margin-bottom: 12px">Resumo do registro</h2>
+  <h3 style="font-size: 18px; margin-bottom: 10px">{{ t.title }}</h3>
+  <p>Categoria {{ t.category }} (ilustrativa) · Código {{ t.errorCode }} · {{ t.description }}</p>
+  <p class="footnote">
+    Severidade e prioridade serão apresentadas após a classificação.
+    @if (t.evidences.length) {
+      Evidência inicial: {{ t.evidences[0].name }}.
+    }
+  </p>
+  <div class="row" style="margin-top: 16px">
+    <button type="button" class="btn btn-primary" (click)="follow.emit()">Acompanhar chamado</button>
+    <button type="button" class="btn" (click)="another.emit()">Registrar outro chamado</button>
+  </div>
+</section>
+@if (dialog()) {
+  <app-modal title="Chamado registrado" (closed)="dialog.set(false)">
+    <p>Protocolo {{ t.id }}. Seu registro está Aberto e será avaliado pela triagem.</p>
+    <p style="margin: 14px 0"><span class="badge lav">Aberto</span></p>
+    <p class="muted">{{ t.unitId }} · {{ t.device }} · {{ fmt(t.openedAt) }}</p>
+    <div footer style="display: contents">
+      <button type="button" class="btn" (click)="dialog.set(false)">Voltar</button>
+      <button type="button" class="btn btn-primary" (click)="follow.emit()">
+        Acompanhar chamado
+      </button>
+    </div>
+  </app-modal>
+}

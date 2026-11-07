@@ -1,0 +1,19 @@
+<section class="card" id="comentarios">
+  <h2 style="margin-bottom: 14px">Comentários</h2>
+  @for (c of ticket().comments; track c.id) {
+    <div style="margin-bottom: 14px">
+      <strong>{{ c.author }} · {{ fmt(c.at) }}</strong>
+      <p style="margin-top: 6px">{{ c.text }}</p>
+    </div>
+  } @empty {
+    <p class="muted" style="margin-bottom: 14px">Nenhum comentário ainda.</p>
+  }
+  @if (editable()) {
+    <app-comment-form
+      [ticketId]="ticket().id"
+      [placeholder]="placeholder()"
+      evidenceTitle="Anexar evidência"
+      (posted)="changed.emit()"
+    />
+  }
+</section>

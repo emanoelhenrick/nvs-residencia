@@ -1,0 +1,10 @@
+@let t = ticket();
+@if (t.kind === 'chamado') {
+  @if (respMin() !== null && t.status !== 'CANCELLED') {
+    <app-tmr-card [respMin]="respMin()!" [tmrMin]="params()?.tmr ?? 0" />
+  }
+  <app-sla-state-card [ticket]="t" [view]="view()" [respMin]="respMin()" />
+  @if (params(); as p) {
+    <app-coverage-card [ticket]="t" [params]="p" [respMin]="respMin()" />
+  }
+}

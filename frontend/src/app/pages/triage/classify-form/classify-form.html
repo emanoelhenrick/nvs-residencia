@@ -1,0 +1,91 @@
+@let t = ticket();
+<form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <app-classify-summary [ticket]="t" [unit]="unit()" (start)="startTriage()" />
+
+  <div class="grid-2">
+    <div class="field">
+      <label class="label" for="sev">Severidade *</label>
+      <select id="sev" class="select" formControlName="severity" [class.invalid]="bad('severity')">
+        <option value="">Selecione</option>
+        @for (s of severities; track s) {
+          <option [value]="s">{{ sevLabel[s] }}</option>
+        }
+      </select>
+      @if (bad('severity')) {
+        <span class="field-error">Selecione a severidade.</span>
+      }
+    </div>
+    <div class="field">
+      <span class="label">Prioridade persistida</span>
+      <div class="input locked row-between" style="gap: 8px">
+        <span>{{
+          t.priority ? t.priority + ' · somente leitura' : 'Definida ao salvar (provisória)'
+        }}</span
+        ><app-icon name="lock" [size]="16" />
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom: 14px">
+    <app-callout variant="warning" title="Matriz S × U ainda não validada">
+      Severidade e urgência não geram um novo P nesta demonstração.
+      {{
+        t.priority
+          ? t.priority + ' é um valor persistido fictício'
+          : 'Para chamados novos, a prioridade provisória acompanha a severidade (S1→P1 … S4→P4)'
+      }}; níveis de urgência pendentes de validação.</app-callout
+    >
+  </div>
+
+  <div class="field">
+    <label class="label" for="urg">Urgência — contexto para avaliação *</label>
+    <textarea
+      id="urg"
+      class="textarea"
+      formControlName="urgency"
+      [class.invalid]="bad('urgency')"
+      placeholder="Descreva a urgência no contexto da operação"
+    ></textarea>
+    @if (bad('urgency')) {
+      <span class="field-error">Descreva o contexto de urgência (mín. 10 caracteres).</span>
+    }
+  </div>
+  <div class="row" style="gap: 32px; margin-bottom: 14px">
+    <label class="check"
+      ><input type="radio" value="este" formControlName="scope" /> Apenas este dispositivo</label
+    >
+    <label class="check"
+      ><input type="radio" value="outros" formControlName="scope" /> Outros dispositivos</label
+    >
+  </div>
+  <div class="field">
+    <label class="label" for="ass">Atribuir responsável *</label>
+    <select
+      id="ass"
+      class="select"
+      formControlName="assigneeId"
+      [class.invalid]="bad('assigneeId')"
+    >
+      <option value="">Selecione</option>
+      @for (a of assignees(); track a.id) {
+        <option [value]="a.id">{{ a.label }}</option>
+      }
+    </select>
+    @if (bad('assigneeId')) {
+      <span class="field-error">Selecione o responsável pelo atendimento.</span>
+    }
+  </div>
+  <div class="field">
+    <label class="label" for="just">Justificativa da classificação / atribuição *</label>
+    <textarea
+      id="just"
+      class="textarea"
+      formControlName="justification"
+      [class.invalid]="bad('justification')"
+      placeholder="Registre o motivo da classificação e da atribuição"
+    ></textarea>
+    @if (bad('justification')) {
+      <span class="field-error">Informe a justificativa (mín. 10 caracteres).</span>
+    }
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="busy()">Salvar triagem e atribuir</button>
+</form>

@@ -1,0 +1,6 @@
+@if (caps().continue) {
+  <app-continue-button [ticketId]="ticket().id" (done)="changed.emit()" />
+}
+@if (caps().cancel) {
+  <button type="button" class="btn" (click)="cancel.emit()">Cancelar com justificativa</button>
+}

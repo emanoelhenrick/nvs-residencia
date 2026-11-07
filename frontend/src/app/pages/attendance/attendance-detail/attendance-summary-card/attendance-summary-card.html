@@ -1,0 +1,20 @@
+@let t = ticket();
+<section class="card">
+  <h2>{{ t.title }}</h2>
+  <div class="row" style="margin: 12px 0; gap: 8px">
+    <app-status-badge [status]="t.status" />
+    @if (t.severity) {
+      <span class="badge sev">{{ sev[t.severity] }}</span>
+    }
+    <span class="badge outline">Prioridade {{ t.priority ?? 'pendente' }}</span>
+  </div>
+  <p>{{ line() }}</p>
+  @if (firstAssign(); as a) {
+    <p class="footnote">
+      Atribuído a {{ t.assignee }} em {{ dt(a.at) }}. Contexto e prioridade somente leitura.
+    </p>
+  }
+  <p style="margin-top: 10px">
+    <a [routerLink]="['/tickets', t.id]" class="link">Abrir detalhes completos do chamado →</a>
+  </p>
+</section>

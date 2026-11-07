@@ -1,0 +1,20 @@
+@let t = ticket();
+<h1>{{ t.title }}</h1>
+<p class="page-sub">
+  {{ t.id }} · {{ isParent() ? t.category + ' · ' + unit() : 'Aberto em ' + opened() }} · Visão de
+  {{ stamp() }}
+</p>
+<div class="chips row">
+  @if (isParent()) {
+    <span class="badge lav">Agrupamento confirmado · revisão humana</span>
+  } @else {
+    <app-status-badge [status]="t.status" />
+    @if (t.severity) {
+      <span class="badge sev">{{ sev[t.severity] }}</span>
+    }
+    <span class="badge outline">Prioridade {{ t.priority ?? 'pendente' }}</span>
+    <span class="small muted"
+      >Responsável: {{ t.status === 'OPEN' ? 'Não atribuído' : t.assignee }}</span
+    >
+  }
+</div>

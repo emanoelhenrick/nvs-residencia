@@ -1,0 +1,9 @@
+<div class="row-between" style="align-items: flex-start; margin-bottom: 20px">
+  <div>
+    <h1>{{ title() }}</h1>
+    @if (subtitle()) {
+      <p class="page-sub">{{ subtitle() }}</p>
+    }
+  </div>
+  <div class="row"><ng-content /></div>
+</div>

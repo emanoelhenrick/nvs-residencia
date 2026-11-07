@@ -1,0 +1,84 @@
+@let t = ticket();
+@let v = view();
+@switch (v.state) {
+  @case ('pausado') {
+    <div class="card tight c warn">
+      <div class="h">
+        <app-icon name="pause" [size]="16" />
+        <strong>{{ supplier() ? 'TMS · consumido congelado' : 'SLA pausado' }}</strong>
+      </div>
+      @if (supplier()) {
+        <div class="big">{{ dur(v.consumedMin) }} consumido · {{ dur(v.remainingMin) }} restantes</div>
+        <div class="small muted">Meta {{ dur(v.tmsMin) }} · valores congelados</div>
+      } @else {
+        <div class="big">Sem contagem ativa</div>
+        <div class="small muted">Desde {{ stamp(t.sla.pausedSince ?? '') }}</div>
+      }
+    </div>
+  }
+  @case ('concluido') {
+    <div class="card tight c">
+      <div class="h"><app-icon name="check-circle" [size]="16" /> <strong>SLA concluído</strong></div>
+      <div class="big">Solução registrada às {{ time(concluded()) }}</div>
+      <div class="small muted">{{ date(concluded()) }} · {{ t.resolution?.by }}</div>
+    </div>
+  }
+  @case ('preservado') {
+    @if (t.status === 'CANCELLED') {
+      <div class="card tight c">
+        <strong>Registro de SLA</strong>
+        <p>Tempo acumulado preservado no registro de SLA.</p>
+        <p class="small muted">Cancelamento não exclui a primeira resposta nem as pausas anteriores.</p>
+      </div>
+    } @else if (t.status === 'REOPENED') {
+      <div class="card tight c">
+        <div class="h"><app-icon name="clock" [size]="16" /> <strong>SLA · consumido preservado</strong></div>
+        <div class="big">Saldo conforme registro</div>
+        <div class="small muted">{{ dur(v.consumedMin) }} consumido · não zerado</div>
+      </div>
+    } @else {
+      <div class="card tight c">
+        <div class="h"><app-icon name="check-circle" [size]="16" /> <strong>SLA · registro preservado</strong></div>
+        <div class="big">Solução registrada às {{ time(concluded()) }}</div>
+        <div class="small muted">{{ date(concluded()) }} · {{ t.resolution?.by }}</div>
+      </div>
+    }
+  }
+  @case ('sem-sla') {
+    <div class="card tight c">
+      <strong>SLA não iniciado</strong>
+      <p class="small muted">
+        Severidade e prioridade serão definidas na triagem; o prazo passa a contar a partir da classificação.
+      </p>
+    </div>
+  }
+  @default {
+    <div class="card tight c" [class.warn]="v.state !== 'dentro-prazo'">
+      <div class="h">
+        <app-icon name="clock" [size]="16" />
+        <strong>
+          @if (v.state === 'violado') {
+            TMS · prazo violado
+          } @else if (v.state === 'atencao') {
+            TMS · {{ v.pct }}% consumido
+          } @else {
+            SLA ativo · {{ t.priority }}
+          }
+        </strong>
+      </div>
+      <div class="big">
+        @if (v.state === 'violado') {
+          0min restantes · +{{ dur(v.overMin) }}
+        } @else {
+          TMS · {{ dur(v.remainingMin) }} restantes
+        }
+      </div>
+      <div class="small muted">
+        {{ dur(v.consumedMin) }} consumido · meta {{ dur(v.tmsMin) }}
+        @if (t.sla.firstResponse; as fr) {
+          · resposta às {{ time(fr.at) }}
+        }
+      </div>
+    </div>
+  }
+}

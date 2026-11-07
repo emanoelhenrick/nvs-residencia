@@ -1,0 +1,10 @@
+<section class="card">
+  <h2>Contexto capturado</h2>
+  <p class="hint" style="margin: 4px 0 14px">
+    Somente leitura · informações capturadas automaticamente
+  </p>
+  <div class="grid-2">
+    <app-locked-field label="Solicitante e ID" [value]="requester()" />
+    <app-locked-field label="Unidade / ID e dispositivo" [value]="where()" />
+  </div>
+</section>

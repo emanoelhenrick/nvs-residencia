@@ -1,0 +1,32 @@
+<div class="field">
+  <label class="label" for="cmt-{{ ticketId() }}">{{ fieldLabel() }}</label>
+  <textarea
+    id="cmt-{{ ticketId() }}"
+    class="textarea"
+    [class.invalid]="invalid()"
+    [placeholder]="placeholder()"
+    [ngModel]="text()"
+    (ngModelChange)="text.set($event)"
+  ></textarea>
+  @if (invalid()) {
+    <span class="field-error">Escreva o comentário antes de enviar.</span>
+  }
+</div>
+<div class="evbox">
+  <app-icon name="paperclip" />
+  <div>
+    <strong>{{ evidenceTitle() }}</strong>
+    @if (file(); as f) {
+      <div class="small">
+        {{ f.name }} · {{ f.sizeKb }} KB
+        <button type="button" class="link" (click)="file.set(null)">Remover arquivo</button>
+      </div>
+    } @else {
+      <div class="small muted">Selecione um arquivo para anexar (opcional)</div>
+      <div style="margin-top: 8px"><app-file-picker (picked)="file.set($event)" /></div>
+    }
+  </div>
+</div>
+<button type="button" class="btn btn-primary" [disabled]="busy()" (click)="submit()">
+  {{ submitLabel() }}
+</button>

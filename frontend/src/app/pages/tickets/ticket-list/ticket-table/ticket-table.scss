@@ -1,0 +1,55 @@
+.all {
+  margin: 4px 0 14px;
+}
+
+.ck {
+  width: 44px;
+}
+
+.ck input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--c-primary);
+}
+
+.proto {
+  color: var(--c-text);
+  white-space: nowrap;
+}
+
+.sum {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 280px;
+}
+
+.title {
+  color: var(--c-text);
+}
+
+.title:hover {
+  color: var(--c-primary);
+  text-decoration: underline;
+}
+
+.sum span {
+  font-size: 13px;
+  color: var(--c-text);
+}
+
+.sla {
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 0;
+}
+
+td.sla {
+  display: table-cell;
+}
+
+td.sla app-sla-bar {
+  margin-top: 6px;
+}

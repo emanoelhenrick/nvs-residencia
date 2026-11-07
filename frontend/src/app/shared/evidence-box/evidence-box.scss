@@ -1,0 +1,19 @@
+.box {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--c-field);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--c-muted);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  strong {
+    color: var(--c-text);
+  }
+}

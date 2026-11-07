@@ -1,0 +1,30 @@
+<div class="rel">
+  <button type="button" class="chip" (click)="open.set(!open())">
+    <app-icon name="filter" [size]="16" /> Período: {{ label() }}
+  </button>
+  @if (open()) {
+    <div class="pop">
+      <label class="label" for="from">De</label>
+      <input
+        id="from"
+        name="from"
+        type="date"
+        class="input"
+        [ngModel]="from()"
+        (ngModelChange)="fromChange.emit($event)"
+      />
+      <label class="label" for="to" style="margin-top: 10px">Até</label>
+      <input
+        id="to"
+        name="to"
+        type="date"
+        class="input"
+        [ngModel]="to()"
+        (ngModelChange)="toChange.emit($event)"
+      />
+      <button type="button" class="btn btn-sm" style="margin-top: 12px" (click)="close()">
+        Concluir
+      </button>
+    </div>
+  }
+</div>

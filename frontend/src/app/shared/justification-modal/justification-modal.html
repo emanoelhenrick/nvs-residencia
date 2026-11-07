@@ -1,0 +1,48 @@
+<app-modal [title]="title()" (closed)="closed.emit()">
+  @if (intro()) {
+    <p class="muted" style="margin-bottom: 16px">{{ intro() }}</p>
+  }
+  @if (lockedLabel()) {
+    <div style="margin-bottom: 14px">
+      <app-locked-field [label]="lockedLabel()" [value]="lockedValue()" />
+    </div>
+  }
+  @if (blocked()) {
+    <div style="margin-bottom: 14px">
+      <app-callout variant="warning">{{ blocked() }}</app-callout>
+    </div>
+  }
+  <ng-content />
+  <div class="field" style="margin-bottom: 0">
+    <label class="label" for="just">{{ label() }} *</label>
+    <textarea
+      id="just"
+      class="textarea"
+      [class.invalid]="touched() && !valid()"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+      [placeholder]="placeholder()"
+    ></textarea>
+    @if (touched() && !valid()) {
+      <span class="field-error"
+        ><app-icon name="info" [size]="14" /> Informe ao menos {{ minLength() }} caracteres.</span
+      >
+    }
+  </div>
+  @if (footnote()) {
+    <p class="footnote warn" style="white-space: pre-line">{{ footnote() }}</p>
+  }
+  <div footer style="display: contents">
+    <button type="button" class="btn" (click)="closed.emit()">Voltar</button>
+    <button
+      type="button"
+      class="btn"
+      [class.btn-primary]="!danger()"
+      [class.btn-danger]="danger()"
+      [disabled]="!!blocked()"
+      (click)="submit()"
+    >
+      {{ confirmText() }}
+    </button>
+  </div>
+</app-modal>

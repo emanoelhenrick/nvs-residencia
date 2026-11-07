@@ -1,8 +1,8 @@
-<div class="shell-container" [class.collapsed]="!layout.sidebarOpen()">
-  <app-header></app-header>
-  <app-side-bar></app-side-bar>
-
-  <main class="body-content">
-    <router-outlet></router-outlet>
-  </main>
+<app-header />
+<div class="layout" [class.collapsed]="ui.sidebarCollapsed()">
+  <app-side-bar />
+  @if (ui.mobileMenu()) {
+    <div class="scrim" (click)="ui.mobileMenu.set(false)"></div>
+  }
+  <main class="content"><router-outlet /></main>
 </div>

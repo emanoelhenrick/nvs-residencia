@@ -1,0 +1,91 @@
+<app-auth-layout>
+  <form
+    class="card"
+    style="width: 100%; max-width: 520px; padding: 24px"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    novalidate
+  >
+    <h1 style="font-size: 26px; margin-bottom: 10px">Cadastre-se</h1>
+    @if (done()) {
+      <app-callout variant="success" title="Solicitação enviada"
+        >Seu cadastro foi registrado e aguarda ativação pelo administrador da sua unidade. Você será
+        avisado por e-mail corporativo.</app-callout
+      >
+      <a routerLink="/login" class="btn btn-primary btn-block" style="margin-top: 16px"
+        >Voltar ao login</a
+      >
+    } @else {
+      <p class="muted" style="margin-bottom: 16px">
+        Solicite acesso com seu e-mail corporativo. O perfil é definido pelo administrador.
+      </p>
+      @if (error()) {
+        <div style="margin-bottom: 14px">
+          <app-callout variant="danger">{{ error() }}</app-callout>
+        </div>
+      }
+      <div class="field">
+        <label class="label" for="name">Nome completo</label>
+        <input
+          id="name"
+          class="input"
+          formControlName="name"
+          [class.invalid]="submitted() && form.controls.name.invalid"
+        />
+        @if (submitted() && form.controls.name.invalid) {
+          <span class="field-error">Informe seu nome completo.</span>
+        }
+      </div>
+      <div class="field">
+        <label class="label" for="email">E-mail corporativo</label>
+        <input
+          id="email"
+          type="email"
+          class="input"
+          formControlName="email"
+          [class.invalid]="submitted() && form.controls.email.invalid"
+        />
+        @if (submitted() && form.controls.email.invalid) {
+          <span class="field-error">Informe um e-mail válido.</span>
+        }
+      </div>
+      <div class="field">
+        <label class="label" for="unit">Unidade</label>
+        <select
+          id="unit"
+          class="select"
+          formControlName="unitId"
+          [class.invalid]="submitted() && form.controls.unitId.invalid"
+        >
+          <option value="">Selecione</option>
+          @for (u of units(); track u.id) {
+            <option [value]="u.id">{{ u.id }} · {{ u.city }}</option>
+          }
+        </select>
+        @if (submitted() && form.controls.unitId.invalid) {
+          <span class="field-error">Selecione sua unidade.</span>
+        }
+      </div>
+      <div class="field">
+        <label class="label" for="pw">Senha</label>
+        <input
+          id="pw"
+          type="password"
+          class="input"
+          formControlName="password"
+          autocomplete="new-password"
+          [class.invalid]="submitted() && form.controls.password.invalid"
+        />
+        @if (submitted() && form.controls.password.invalid) {
+          <span class="field-error">A senha deve ter ao menos 6 caracteres.</span>
+        }
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+          Solicitar acesso
+        </button>
+      <a routerLink="/login" class="link" style="display: inline-block; margin-top: 14px"
+        >Voltar ao login</a
+      >
+    }
+  </form>
+</app-auth-layout>

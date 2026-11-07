@@ -1,0 +1,1074 @@
+{
+  "users": [
+    {
+      "unitId": "Loja 042",
+      "supplier": null,
+      "device": "PDV-07",
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-02518",
+      "name": "Ana Silva",
+      "email": "ana.silva@nexovarejo.com.br",
+      "role": "REQUESTER"
+    },
+    {
+      "unitId": "Loja 015",
+      "supplier": null,
+      "device": "PDV-03",
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-03001",
+      "name": "Bruno Rocha",
+      "email": "bruno.rocha@nexovarejo.com.br",
+      "role": "REQUESTER"
+    },
+    {
+      "unitId": "Loja 009",
+      "supplier": null,
+      "device": null,
+      "active": false,
+      "password": "demo@nexo123",
+      "id": "USR-03002",
+      "name": "Fernanda Dias",
+      "email": "fernanda.dias@nexovarejo.com.br",
+      "role": "REQUESTER"
+    },
+    {
+      "unitId": null,
+      "supplier": null,
+      "device": null,
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-00841",
+      "name": "Marina Costa",
+      "email": "marina.costa@nexovarejo.com.br",
+      "role": "TRIAGE_AGENT"
+    },
+    {
+      "unitId": null,
+      "supplier": null,
+      "device": null,
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-00877",
+      "name": "Rafael Melo",
+      "email": "rafael.melo@nexovarejo.com.br",
+      "role": "SPECIALIST"
+    },
+    {
+      "unitId": null,
+      "supplier": null,
+      "device": null,
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-00915",
+      "name": "João Santos",
+      "email": "joao.santos@nexovarejo.com.br",
+      "role": "SPECIALIST"
+    },
+    {
+      "unitId": null,
+      "supplier": "TecPrint",
+      "device": null,
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "EXT-00072",
+      "name": "Carlos Nunes",
+      "email": "carlos@tecprint.com.br",
+      "role": "SUPPLIER"
+    },
+    {
+      "unitId": null,
+      "supplier": null,
+      "device": null,
+      "active": true,
+      "password": "demo@nexo123",
+      "id": "USR-00102",
+      "name": "Paulo Lima",
+      "email": "paulo.lima@nexovarejo.com.br",
+      "role": "LEADER"
+    }
+  ],
+  "units": [
+    {
+      "id": "Loja 042",
+      "type": "Loja",
+      "city": "Recife",
+      "uf": "PE",
+      "manager": "Ana Silva"
+    },
+    {
+      "id": "Loja 015",
+      "type": "Loja",
+      "city": "Salvador",
+      "uf": "BA",
+      "manager": "Bruno Rocha"
+    },
+    {
+      "id": "Loja 028",
+      "type": "Loja",
+      "city": "Natal",
+      "uf": "RN",
+      "manager": "Lúcia Moura"
+    },
+    {
+      "id": "Loja 009",
+      "type": "Loja",
+      "city": "Maceió",
+      "uf": "AL",
+      "manager": "Rita Gomes"
+    },
+    {
+      "id": "CD 003",
+      "type": "Centro de distribuição",
+      "city": "Jaboatão",
+      "uf": "PE",
+      "manager": "Pedro Alves"
+    },
+    {
+      "id": "CD 001",
+      "type": "Centro de distribuição",
+      "city": "Recife",
+      "uf": "PE",
+      "manager": "Sérgio Lima"
+    }
+  ],
+  "tickets": [
+    {
+      "kind": "chamado",
+      "description": "O PDV-07 retorna o erro E204 ao finalizar a venda. O pagamento não foi confirmado e a venda permanece aberta. Os demais terminais continuam operando; os clientes foram direcionados aos outros caixas.",
+      "errorCode": "E204",
+      "impact": "Um terminal sem finalizar vendas.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "IN_PROGRESS",
+      "severity": "S2",
+      "priority": "P2",
+      "urgency": "Venda pendente e fila no caixa; sem alternativa neste terminal.",
+      "requester": {
+        "id": "USR-02518",
+        "name": "Ana Silva"
+      },
+      "device": "PDV-07",
+      "assignee": "Marina Costa",
+      "assigneeId": "USR-00841",
+      "supplier": null,
+      "evidences": [
+        {
+          "id": "e1",
+          "name": "terminal-pdv07.jpg",
+          "sizeKb": 310,
+          "by": "Ana Silva",
+          "at": "2026-11-04T19:17:42",
+          "note": "foto inicial da operação",
+          "kind": "inicial"
+        },
+        {
+          "id": "e2",
+          "name": "erro-pdv.jpg",
+          "sizeKb": 482,
+          "by": "Ana Silva",
+          "at": "2026-11-04T20:02:42",
+          "note": "recebida de Ana Silva",
+          "kind": "complementar"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c3",
+          "author": "Marina Costa",
+          "at": "2026-11-04T19:39:42",
+          "text": "Ana, envie uma foto da mensagem de erro para continuarmos o diagnóstico."
+        },
+        {
+          "id": "c4",
+          "author": "Ana Silva",
+          "at": "2026-11-04T20:02:42",
+          "text": "Foto enviada. O erro E204 permanece no terminal PDV-07."
+        }
+      ],
+      "history": [
+        {
+          "id": "h5",
+          "at": "2026-11-04T20:02:42",
+          "author": "Marina Costa · N1",
+          "from": "Aguardando Solicitante",
+          "to": "Em atendimento",
+          "text": "Foto recebida de Ana Silva. Motivo preservado: foto do erro. Início da pausa 10:42; fim 11:05.",
+          "kind": "resume"
+        },
+        {
+          "id": "h6",
+          "at": "2026-11-04T19:39:42",
+          "author": "Marina Costa · N1",
+          "from": "Em atendimento",
+          "to": "Aguardando Solicitante",
+          "text": "Foto do erro solicitada. Fim da pausa em aberto.",
+          "kind": "pause"
+        },
+        {
+          "id": "h7",
+          "at": "2026-11-04T19:31:42",
+          "author": "Marina Costa · N1",
+          "from": "Em triagem",
+          "to": "Em atendimento",
+          "text": "Atribuído a Marina Costa. Primeira resposta registrada.",
+          "kind": "assign"
+        },
+        {
+          "id": "h8",
+          "at": "2026-11-04T19:30:42",
+          "author": "Marina Costa · N1",
+          "from": "Aberto",
+          "to": "Em triagem",
+          "text": "Classificação inicial: S2 Alta; P2 persistida.",
+          "kind": "triage"
+        },
+        {
+          "id": "h9",
+          "at": "2026-11-04T19:17:42",
+          "author": "Ana Silva · USR-02518",
+          "from": null,
+          "to": "Aberto",
+          "text": "Venda não finaliza no terminal. Contexto Loja 042 · Recife · PDV-07 capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 22,
+        "runningSince": "2026-11-04T20:02:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": {
+          "by": "Marina Costa",
+          "at": "2026-11-04T19:31:42",
+          "text": "Assumi o diagnóstico do terminal PDV-07."
+        },
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01842",
+      "title": "Venda não finaliza no terminal",
+      "category": "PDV",
+      "unitId": "Loja 042",
+      "openedAt": "2026-11-04T19:17:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Pagamento TEF sem retorno na Loja 015 · Salvador. Rafael Melo acompanha o atendimento do terminal PDV-03.",
+      "errorCode": "TEF-504",
+      "impact": "Vendas com cartão sem confirmação no PDV-03.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "IN_PROGRESS",
+      "severity": "S2",
+      "priority": "P1",
+      "urgency": "",
+      "requester": {
+        "id": "USR-03001",
+        "name": "Bruno Rocha"
+      },
+      "device": "PDV-03",
+      "assignee": "Rafael Melo",
+      "assigneeId": "USR-00877",
+      "supplier": null,
+      "evidences": [
+        {
+          "id": "e10",
+          "name": "log-tef.txt",
+          "sizeKb": 4,
+          "by": "Bruno Rocha",
+          "at": "2026-11-04T21:45:42",
+          "note": "relato de falha no TEF",
+          "kind": "relato"
+        }
+      ],
+      "comments": [],
+      "history": [
+        {
+          "id": "h11",
+          "at": "2026-11-04T21:55:42",
+          "author": "Rafael Melo · Especialista",
+          "from": "Em triagem",
+          "to": "Em atendimento",
+          "text": "Assumiu o atendimento. Primeira resposta registrada.",
+          "kind": "assign"
+        },
+        {
+          "id": "h12",
+          "at": "2026-11-04T21:45:42",
+          "author": "Bruno Rocha · USR-03001",
+          "from": null,
+          "to": "Aberto",
+          "text": "Pagamento TEF sem retorno. Contexto Loja 015 · Salvador · PDV-03 capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T21:45:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": {
+          "by": "Rafael Melo",
+          "at": "2026-11-04T21:55:42",
+          "text": "Em análise do retorno do TEF."
+        },
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01841",
+      "title": "Pagamento TEF sem retorno",
+      "category": "Pagamentos",
+      "unitId": "Loja 015",
+      "openedAt": "2026-11-04T21:45:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "O PDV-08 trava ao concluir a venda e retorna o erro E204.",
+      "errorCode": "E204",
+      "impact": "Um terminal não conclui vendas; fila direcionada aos outros caixas.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "IN_TRIAGE",
+      "severity": "S2",
+      "priority": "P2",
+      "urgency": "",
+      "requester": {
+        "id": "USR-02518",
+        "name": "Ana Silva"
+      },
+      "device": "PDV-08",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [
+        {
+          "id": "e13",
+          "name": "captura-pdv08.jpg",
+          "sizeKb": 390,
+          "by": "Ana Silva",
+          "at": "2026-11-04T19:22:42",
+          "note": "captura inicial",
+          "kind": "inicial"
+        }
+      ],
+      "comments": [],
+      "history": [
+        {
+          "id": "h14",
+          "at": "2026-11-04T19:27:42",
+          "author": "Marina Costa · N1",
+          "from": "Aberto",
+          "to": "Em triagem",
+          "text": "Triagem iniciada.",
+          "kind": "triage"
+        },
+        {
+          "id": "h15",
+          "at": "2026-11-04T19:22:42",
+          "author": "Ana Silva · USR-02518",
+          "from": null,
+          "to": "Aberto",
+          "text": "Terminal trava ao concluir venda. Contexto Loja 042 · Recife · PDV-08 capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T19:22:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01843",
+      "title": "Terminal trava ao concluir venda",
+      "category": "PDV",
+      "unitId": "Loja 042",
+      "openedAt": "2026-11-04T19:22:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Falha na confirmação da venda no PDV-09 (E204).",
+      "errorCode": "E204",
+      "impact": "Vendas não confirmadas no terminal.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "OPEN",
+      "severity": "S2",
+      "priority": "P2",
+      "urgency": "",
+      "requester": {
+        "id": "USR-02518",
+        "name": "Ana Silva"
+      },
+      "device": "PDV-09",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [
+        {
+          "id": "e16",
+          "name": "relato-falha-pdv09.txt",
+          "sizeKb": 2,
+          "by": "Ana Silva",
+          "at": "2026-11-04T19:29:42",
+          "note": "relato de falha na confirmação",
+          "kind": "relato"
+        }
+      ],
+      "comments": [],
+      "history": [
+        {
+          "id": "h17",
+          "at": "2026-11-04T19:29:42",
+          "author": "Ana Silva · USR-02518",
+          "from": null,
+          "to": "Aberto",
+          "text": "Falha na confirmação da venda. Contexto Loja 042 · Recife · PDV-09 capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T19:29:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01844",
+      "title": "Falha na confirmação da venda",
+      "category": "PDV",
+      "unitId": "Loja 042",
+      "openedAt": "2026-11-04T19:29:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Sem sinal de Wi-Fi no depósito da Loja 009 · Maceió; coletores sem comunicação.",
+      "errorCode": "—",
+      "impact": "Conferência de mercadorias parada no depósito.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "OPEN",
+      "severity": null,
+      "priority": null,
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Rita Gomes"
+      },
+      "device": "Access point",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [],
+      "comments": [],
+      "history": [
+        {
+          "id": "h18",
+          "at": "2026-11-04T23:08:42",
+          "author": "Rita Gomes",
+          "from": null,
+          "to": "Aberto",
+          "text": "Wi-Fi sem sinal no depósito. Contexto Loja 009 · Maceió capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T23:08:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01845",
+      "title": "Wi-Fi sem sinal no depósito",
+      "category": "Rede",
+      "unitId": "Loja 009",
+      "openedAt": "2026-11-04T23:08:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Switch do balcão sem comunicação; PDV sem acesso à rede da loja.",
+      "errorCode": "—",
+      "impact": "Caixa do balcão sem rede.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "OPEN",
+      "severity": null,
+      "priority": null,
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Rita Gomes"
+      },
+      "device": "Switch",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [],
+      "comments": [],
+      "history": [
+        {
+          "id": "h19",
+          "at": "2026-11-04T23:14:42",
+          "author": "Rita Gomes",
+          "from": null,
+          "to": "Aberto",
+          "text": "Switch sem comunicação com o PDV. Contexto Loja 009 · Maceió capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T23:14:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01846",
+      "title": "Switch sem comunicação com o PDV",
+      "category": "Rede",
+      "unitId": "Loja 009",
+      "openedAt": "2026-11-04T23:14:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Impressora não emite etiquetas no CD 003 · Jaboatão. O chamado está atribuído à TecPrint e aguarda laudo técnico para continuar o diagnóstico.",
+      "errorCode": "PRT-12",
+      "impact": "Expedição sem etiquetas.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "WAITING_THIRD_PARTY",
+      "severity": "S3",
+      "priority": "P3",
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Pedro Alves"
+      },
+      "device": "Impressora",
+      "assignee": "TecPrint · Fornecedor",
+      "assigneeId": "EXT-00072",
+      "supplier": {
+        "org": "TecPrint",
+        "contact": "Carlos Nunes",
+        "userId": "EXT-00072"
+      },
+      "evidences": [
+        {
+          "id": "e20",
+          "name": "foto-impressora.jpg",
+          "sizeKb": 220,
+          "by": "Pedro Alves",
+          "at": "2026-11-04T15:57:42",
+          "note": "foto inicial da operação",
+          "kind": "inicial"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c21",
+          "author": "Carlos Nunes · TecPrint",
+          "at": "2026-11-04T20:57:42",
+          "text": "Laudo técnico em elaboração. Aguardamos a avaliação da impressora para orientar a continuidade do atendimento."
+        }
+      ],
+      "history": [
+        {
+          "id": "h22",
+          "at": "2026-11-04T20:57:42",
+          "author": "Carlos Nunes · TecPrint",
+          "from": "Em atendimento",
+          "to": "Aguardando Terceiro/Fornecedor",
+          "text": "Laudo técnico pendente. Fim da pausa em aberto. TMS congelado.",
+          "kind": "pause"
+        },
+        {
+          "id": "h23",
+          "at": "2026-11-04T16:57:42",
+          "author": "Carlos Nunes · TecPrint",
+          "from": "Em triagem",
+          "to": "Em atendimento",
+          "text": "Atribuído à TecPrint. Primeira resposta registrada.",
+          "kind": "assign"
+        },
+        {
+          "id": "h24",
+          "at": "2026-11-04T15:57:42",
+          "author": "Pedro Alves",
+          "from": null,
+          "to": "Aberto",
+          "text": "Impressora não emite etiquetas. Contexto CD 003 · Jaboatão capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 300,
+        "runningSince": null,
+        "pausedSince": "2026-11-04T20:57:42",
+        "pauseReason": "laudo técnico",
+        "firstResponse": {
+          "by": "Carlos Nunes",
+          "at": "2026-11-04T16:57:42",
+          "text": "Chamado recebido pela TecPrint."
+        },
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01839",
+      "title": "Impressora não emite etiquetas",
+      "category": "Impressora",
+      "unitId": "CD 003",
+      "openedAt": "2026-11-04T15:57:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Sem acesso ao portal de serviços na Loja 028 · Natal.",
+      "errorCode": "—",
+      "impact": "Atualizações cadastrais bloqueadas.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "IN_TRIAGE",
+      "severity": "S4",
+      "priority": "P4",
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Lúcia Moura"
+      },
+      "device": "Portal",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [],
+      "comments": [],
+      "history": [
+        {
+          "id": "h25",
+          "at": "2026-11-04T01:42:42",
+          "author": "Marina Costa · N1",
+          "from": "Aberto",
+          "to": "Em triagem",
+          "text": "Triagem iniciada.",
+          "kind": "triage"
+        },
+        {
+          "id": "h26",
+          "at": "2026-11-04T01:07:42",
+          "author": "Lúcia Moura",
+          "from": null,
+          "to": "Aberto",
+          "text": "Acesso ao portal de serviços. Contexto Loja 028 · Natal capturado.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": "2026-11-04T01:07:42",
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01838",
+      "title": "Acesso ao portal de serviços",
+      "category": "Serviços",
+      "unitId": "Loja 028",
+      "openedAt": "2026-11-04T01:07:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Cupom fiscal sai com impressão incompleta na Loja 009 · Maceió.",
+      "errorCode": "—",
+      "impact": "Cupons ilegíveis.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "CLOSED",
+      "severity": "S3",
+      "priority": "P3",
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Rita Gomes"
+      },
+      "device": "Impressora",
+      "assignee": "João Santos",
+      "assigneeId": "USR-00915",
+      "supplier": null,
+      "evidences": [
+        {
+          "id": "e27",
+          "name": "cupom.jpg",
+          "sizeKb": 150,
+          "by": "Rita Gomes",
+          "at": "2026-11-03T17:57:42",
+          "note": "foto inicial da operação",
+          "kind": "inicial"
+        }
+      ],
+      "comments": [],
+      "history": [
+        {
+          "id": "h40",
+          "at": "2026-11-07T18:18:07",
+          "author": "Sistema",
+          "from": "Resolvido",
+          "to": "Fechado",
+          "text": "Fechamento automático: mais de 48h sem manifestação após a resolução.",
+          "kind": "close"
+        },
+        {
+          "id": "h28",
+          "at": "2026-11-04T20:27:42",
+          "author": "João Santos · Especialista",
+          "from": "Em atendimento",
+          "to": "Resolvido",
+          "text": "Solução registrada: cabeçote limpo e firmware atualizado.",
+          "kind": "resolve"
+        },
+        {
+          "id": "h29",
+          "at": "2026-11-03T18:37:42",
+          "author": "João Santos · Especialista",
+          "from": "Em triagem",
+          "to": "Em atendimento",
+          "text": "Assumiu o atendimento.",
+          "kind": "assign"
+        },
+        {
+          "id": "h30",
+          "at": "2026-11-03T17:57:42",
+          "author": "Rita Gomes",
+          "from": null,
+          "to": "Aberto",
+          "text": "Cupom com impressão incompleta.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 210,
+        "runningSince": null,
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": {
+          "by": "João Santos",
+          "at": "2026-11-03T18:37:42",
+          "text": "Em análise."
+        },
+        "concludedAt": "2026-11-04T20:27:42",
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": {
+        "text": "Cabeçote da impressora limpo e firmware atualizado. Impressão normalizada.",
+        "by": "João Santos · Especialista",
+        "at": "2026-11-04T20:27:42"
+      },
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": "2026-11-07T18:18:07",
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01837",
+      "title": "Cupom com impressão incompleta",
+      "category": "Impressora",
+      "unitId": "Loja 009",
+      "openedAt": "2026-11-03T17:57:42"
+    },
+    {
+      "kind": "chamado",
+      "description": "Atualização de cadastro de acesso no CD 001 · Recife.",
+      "errorCode": "—",
+      "impact": "Colaborador sem acesso atualizado.",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "CLOSED",
+      "severity": "S4",
+      "priority": "P4",
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Sérgio Lima"
+      },
+      "device": "Portal",
+      "assignee": "João Santos",
+      "assigneeId": "USR-00915",
+      "supplier": null,
+      "evidences": [],
+      "comments": [],
+      "history": [
+        {
+          "id": "h31",
+          "at": "2026-11-03T00:42:42",
+          "author": "Sistema",
+          "from": "Resolvido",
+          "to": "Fechado",
+          "text": "Fechamento automático: mais de 48h sem manifestação após a resolução.",
+          "kind": "close"
+        },
+        {
+          "id": "h32",
+          "at": "2026-11-01T00:22:42",
+          "author": "João Santos · Especialista",
+          "from": "Em atendimento",
+          "to": "Resolvido",
+          "text": "Cadastro atualizado.",
+          "kind": "resolve"
+        },
+        {
+          "id": "h33",
+          "at": "2026-10-31T19:22:42",
+          "author": "Sérgio Lima",
+          "from": null,
+          "to": "Aberto",
+          "text": "Atualização de cadastro de acesso.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 300,
+        "runningSince": null,
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": {
+          "by": "João Santos",
+          "at": "2026-10-31T21:02:42",
+          "text": "Em análise."
+        },
+        "concludedAt": "2026-11-01T00:22:42",
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": {
+        "text": "Cadastro atualizado e acesso validado.",
+        "by": "João Santos · Especialista",
+        "at": "2026-11-01T00:22:42"
+      },
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": "2026-11-03T00:42:42",
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01836",
+      "title": "Atualização de cadastro de acesso",
+      "category": "Serviços",
+      "unitId": "CD 001",
+      "openedAt": "2026-10-31T19:22:42"
+    },
+    {
+      "kind": "incidente-pai",
+      "description": "Incidente pai para acompanhamento conjunto de falhas na conclusão de vendas.",
+      "errorCode": "—",
+      "impact": "",
+      "affectsOthers": false,
+      "scope": "este",
+      "status": "OPEN",
+      "severity": null,
+      "priority": null,
+      "urgency": "",
+      "requester": {
+        "id": null,
+        "name": "Registros de origem"
+      },
+      "device": "PDV-07 / PDV-08 / PDV-09",
+      "assignee": "Fila N1",
+      "assigneeId": null,
+      "supplier": null,
+      "evidences": [],
+      "comments": [],
+      "history": [
+        {
+          "id": "h34",
+          "at": "2026-11-04T19:32:42",
+          "author": "Marina Costa · N1",
+          "from": null,
+          "to": "Aberto",
+          "text": "Incidente pai criado para agrupar falhas de conclusão de venda.",
+          "kind": "open"
+        }
+      ],
+      "sla": {
+        "consumedMin": 0,
+        "runningSince": null,
+        "pausedSince": null,
+        "pauseReason": null,
+        "firstResponse": null,
+        "concludedAt": null,
+        "attentionAt": null,
+        "violatedAt": null
+      },
+      "parentId": null,
+      "childIds": [],
+      "group": null,
+      "groupDismissed": null,
+      "resolution": null,
+      "cancellation": null,
+      "reopening": null,
+      "closedAuto": null,
+      "reassessments": [],
+      "escalations": [],
+      "id": "NX-2026-01840",
+      "title": "Incidente Pai · falhas na conclusão de vendas",
+      "category": "PDV",
+      "unitId": "Loja 042",
+      "openedAt": "2026-11-04T19:32:42"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n35",
+      "userId": "USR-00841",
+      "title": "80% do TMS atingido",
+      "text": "NX-2026-01841 consumiu 80% do prazo de solução. Revise a necessidade de escalonamento.",
+      "ticketId": "NX-2026-01841",
+      "at": "2026-11-04T23:17:42",
+      "read": false
+    },
+    {
+      "id": "n36",
+      "userId": "USR-00841",
+      "title": "Atendimento retomado",
+      "text": "Foto recebida; o atendimento de NX-2026-01842 foi retomado.",
+      "ticketId": "NX-2026-01842",
+      "at": "2026-11-04T20:02:42",
+      "read": false
+    },
+    {
+      "id": "n37",
+      "userId": "USR-02518",
+      "title": "Informação solicitada",
+      "text": "Marina Costa solicitou uma foto da mensagem de erro.",
+      "ticketId": "NX-2026-01842",
+      "at": "2026-11-04T19:39:42",
+      "read": true
+    },
+    {
+      "id": "n38",
+      "userId": "EXT-00072",
+      "title": "Chamado atribuído",
+      "text": "NX-2026-01839 foi atribuído à TecPrint.",
+      "ticketId": "NX-2026-01839",
+      "at": "2026-11-04T16:57:42",
+      "read": true
+    }
+  ],
+  "accessLogs": [
+    {
+      "id": "l39",
+      "at": "2026-11-03T14:02:42",
+      "by": "Paulo Lima · Líder / Gestor",
+      "title": "Acesso de Carlos Nunes atualizado",
+      "text": "Perfil mantido como Fornecedor; situação ativa. Justificativa: revisão trimestral de acessos externos."
+    }
+  ],
+  "counters": {
+    "ticket": 1847,
+    "seq": 40
+  }
+}

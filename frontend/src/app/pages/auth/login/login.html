@@ -1,0 +1,60 @@
+<app-auth-layout>
+  <div class="split">
+    <section class="hero">
+      <p class="eyebrow">CENTRAL DE OPERAÇÕES</p>
+      <h1>Sua operação conectada. Cada chamado acompanhado.</h1>
+      <p class="lead">
+        Registre ocorrências de loja e CD, acompanhe o atendimento e mantenha todas as decisões em
+        um só lugar.
+      </p>
+      <ul>
+        <li><app-icon name="check" [size]="14" /> Contexto da unidade sempre presente</li>
+        <li><app-icon name="check" [size]="14" /> Prazos e pendências visíveis</li>
+        <li><app-icon name="check" [size]="14" /> Histórico de ponta a ponta</li>
+      </ul>
+    </section>
+    <div class="side">
+      <form class="card form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <app-icon name="check-circle" [size]="20" />
+        <h1>Entre no Nexo Varejo</h1>
+        <p class="muted">Use suas credenciais corporativas para acessar a central.</p>
+        @if (error()) {
+          <app-callout variant="danger">{{ error() }}</app-callout>
+        }
+        <div class="field">
+          <label class="label" for="email">E-mail corporativo</label>
+          <input
+            id="email"
+            class="input"
+            type="email"
+            formControlName="email"
+            autocomplete="username"
+            [class.invalid]="submitted() && form.controls.email.invalid"
+          />
+          @if (submitted() && form.controls.email.invalid) {
+            <span class="field-error">Informe um e-mail corporativo válido.</span>
+          }
+        </div>
+        <div class="field">
+          <label class="label" for="password">Senha</label>
+          <input
+            id="password"
+            class="input"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            [class.invalid]="submitted() && form.controls.password.invalid"
+          />
+          @if (submitted() && form.controls.password.invalid) {
+            <span class="field-error">A senha deve ter ao menos 6 caracteres.</span>
+          }
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+          {{ loading() ? "Entrando…" : "Entrar" }}
+        </button>
+        <a routerLink="/register" class="btn btn-block">Cadastre-se</a>
+        <a routerLink="/forgot-password" class="link">Recuperar senha</a>
+      </form>
+    </div>
+  </div>
+</app-auth-layout>

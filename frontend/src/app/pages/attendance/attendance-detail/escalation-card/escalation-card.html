@@ -1,0 +1,19 @@
+<section class="card">
+  <h2 style="margin-bottom: 8px">Revisão de escalonamento</h2>
+  <p>
+    Revise a necessidade e informe a justificativa.
+    @if (!enabled()) {
+      Este chamado não está no estado de 80% do TMS.
+    }
+  </p>
+  <button
+    type="button"
+    class="btn btn-block"
+    style="margin-top: 12px"
+    [disabled]="!enabled()"
+    (click)="review.emit()"
+  >
+    Revisar escalonamento
+  </button>
+  <p class="footnote">Sem escalonamento automático; decisões são auditáveis.</p>
+</section>

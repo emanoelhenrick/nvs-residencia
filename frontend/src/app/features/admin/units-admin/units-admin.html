@@ -1,0 +1,17 @@
+<section class="card">
+  <h2 style="margin-bottom: 14px">Unidades cadastradas</h2>
+  <app-unit-table [units]="units()" (edit)="openEdit($event)" (delete)="openDelete($event)" />
+  <button type="button" class="btn" style="margin-top: 14px" (click)="openCreate()">
+    Cadastrar unidade
+  </button>
+</section>
+@if (open()) {
+  <app-unit-form-modal [unit]="editing()" (saved)="onSaved()" (closed)="open.set(false)" />
+}
+@if (deleting()) {
+  <app-unit-delete-modal
+    [unit]="deleting()"
+    (deleted)="deleting.set(null); load()"
+    (closed)="deleting.set(null)"
+  />
+}

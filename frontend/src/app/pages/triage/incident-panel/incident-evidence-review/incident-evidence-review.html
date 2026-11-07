@@ -1,0 +1,32 @@
+@let g = group();
+<section class="card">
+  <h2 style="margin-bottom: 14px">Evidências dos {{ g.tickets.length }} registros</h2>
+  <div class="stack-sm">
+    @for (t of g.tickets; track t.id) {
+      <div class="ev">
+        <strong>{{ t.id }}</strong>
+        <span>{{ t.device }} · {{ t.errorCode }} · {{ evidence(t) }}</span>
+        <span class="small muted">{{ stamp(t.openedAt) }} · {{ t.category }} · {{ t.unitId }}</span>
+      </div>
+    }
+  </div>
+  <p class="footnote">
+    A sugestão permanece em revisão, sem incidente vinculado, até a confirmação humana.
+  </p>
+</section>
+<section class="card">
+  <h2 style="margin-bottom: 8px">Confirmação humana necessária</h2>
+  <p>
+    Confirme a mesma causa somente depois de revisar todas as evidências.
+    @if (parents().length) {
+      O incidente candidato é {{ parents()[0].id }}.
+    }
+  </p>
+  <p class="footnote">
+    A confirmação registra autor, data, evidências e justificativa. Cancelar a análise mantém a
+    sugestão; não altera status, S ou P.
+  </p>
+  <button type="button" class="btn btn-primary" style="margin-top: 12px" (click)="openLink.emit()">
+    Confirmar vínculo ao incidente…
+  </button>
+</section>

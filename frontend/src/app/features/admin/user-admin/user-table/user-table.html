@@ -1,0 +1,53 @@
+<section class="card">
+  <h2>Usuários · {{ users().length }} registros</h2>
+  <div class="field" style="margin-top: 14px">
+    <label class="label" for="usr-q">Buscar usuário</label>
+    <div class="search">
+      <app-icon name="search" [size]="16" /><input
+        id="usr-q"
+        class="bare"
+        placeholder="Buscar por nome, e-mail ou ID"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+      />
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Usuário / ID</th>
+          <th>E-mail corporativo</th>
+          <th>Perfil</th>
+          <th>Escopo</th>
+          <th>Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of filtered(); track u.id) {
+          <tr
+            class="row-click"
+            [class.selected]="u.id === selectedId()"
+            tabindex="0"
+            (click)="select.emit(u.id)"
+            (keydown.enter)="select.emit(u.id)"
+          >
+            <td>{{ u.name }}<br />{{ u.id }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ roleLabel[u.role] }}</td>
+            <td>{{ scopeOf(u) }}</td>
+            <td>{{ u.active ? 'Ativo' : 'Inativo' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="muted">Nenhum usuário encontrado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="footnote">
+    {{ filtered().length }} de {{ users().length }} usuários · Perfis e unidade definem o
+    alcance da consulta. Clique em uma linha para editar o acesso.
+  </p>
+</section>

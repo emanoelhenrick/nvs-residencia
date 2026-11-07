@@ -1,0 +1,17 @@
+@let g = group();
+<section class="card">
+  <span class="badge amber">Sugestão · revisão humana</span>
+  <h2 style="margin: 12px 0 6px">Possível incidente · revisão humana</h2>
+  <p>
+    {{ g.tickets.length }} chamados de {{ g.category }} na {{ unit() }} em {{ g.spanMin }} minutos:
+    {{ times().join(', ') }}.
+  </p>
+  <p class="small muted" style="margin: 8px 0 16px">
+    Mesma categoria E unidade, em até 15min. Confira evidências; não há vínculo automático nem elevação
+    de severidade.
+  </p>
+  <div class="row">
+    <button type="button" class="btn btn-primary" (click)="review.emit()">Revisar agrupamento</button>
+    <button type="button" class="link" (click)="discard.emit()">Descartar com justificativa</button>
+  </div>
+</section>

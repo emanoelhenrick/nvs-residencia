@@ -1,66 +1,65 @@
-@use '../../../styles/_varibles' as *;
-
-.header {
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 0 1rem;
-  background: $bg-card;
-  border-bottom: 1px solid $border-color;
-  font-family: 'Inter', system-ui, sans-serif;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: var(--header-h, 50px);
-  z-index: 30;
+  padding: 0 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--c-border-soft);
 }
-
-.titulo {
-  margin: 0;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--brand);
-}
-
-.acoes {
+.left,
+.right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 16px;
 }
-
-.sino {
+.logo img {
+  display: block;
+}
+.app {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.icon-btn {
   position: relative;
-  display: grid;
-  place-items: center;
-  padding: 0.25rem;
-  border: 0;
-  border-radius: 6px;
   background: none;
-  color: $text-muted;
-  cursor: pointer;
-
-  &:hover {
-    color: $text-primary;
-  }
-  &:focus-visible {
-    outline: 2px solid $primary-purple;
-    outline-offset: 2px;
-  }
+  border: 0;
+  color: var(--c-muted);
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
 }
-
-.badge {
+.icon-btn:hover {
+  background: var(--c-primary-soft);
+}
+.dot {
   position: absolute;
-  top: 2px;
-  right: 3px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ef4444;
-  border: 1.5px solid #fff;
+  top: -2px;
+  right: -2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--c-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.usuario {
-  font-size: 0.875rem;
-  color: $text-primary;
+.user {
+  font-size: 13.5px;
+}
+.rel {
+  position: relative;
+}
+@media (max-width: 700px) {
+  .user,
+  .app {
+    display: none;
+  }
 }

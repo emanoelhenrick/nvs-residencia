@@ -1,0 +1,33 @@
+.q {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.meta {
+  gap: 8px;
+  margin-top: 6px;
+}
+.foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  margin-top: 6px;
+}
+.green {
+  background: #dcfce7;
+  color: #166534;
+  border-color: transparent;
+}
+.amber-t {
+  color: #d97706;
+}
+.red-t {
+  color: #b42318;
+}

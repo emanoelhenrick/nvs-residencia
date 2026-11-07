@@ -1,0 +1,1 @@
+export type Role = 'REQUESTER' | 'TRIAGE_AGENT' | 'SPECIALIST' | 'SUPPLIER' | 'LEADER';

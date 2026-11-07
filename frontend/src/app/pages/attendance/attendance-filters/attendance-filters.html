@@ -1,0 +1,49 @@
+<section class="card" style="margin: 16px 0">
+  <h3 style="font-size: 14px; margin-bottom: 10px">Buscar chamados</h3>
+  <div class="filters">
+    <div class="s">
+      <input
+        class="input"
+        type="search"
+        placeholder="Protocolo, título ou loja"
+        aria-label="Buscar"
+        [ngModel]="value().search"
+        (ngModelChange)="set('search', $event)"
+      />
+    </div>
+    <select
+      class="select"
+      aria-label="Prioridade"
+      [ngModel]="value().priority"
+      (ngModelChange)="set('priority', $event)"
+    >
+      <option value="">Prioridade: todas</option>
+      @for (p of priorities; track p) {
+        <option [value]="p">{{ p }}</option>
+      }
+    </select>
+    <select
+      class="select"
+      aria-label="Situação do SLA"
+      [ngModel]="value().slaState"
+      (ngModelChange)="set('slaState', $event)"
+    >
+      <option value="">Situação do SLA: todas</option>
+      <option value="dentro-prazo">Dentro do prazo</option>
+      <option value="atencao">Em atenção</option>
+      <option value="violado">Violado</option>
+      <option value="pausado">Pausado</option>
+    </select>
+    <select
+      class="select"
+      aria-label="Responsável"
+      [ngModel]="value().assignee"
+      (ngModelChange)="set('assignee', $event)"
+    >
+      <option value="">Responsável: todos</option>
+      @for (a of assignees(); track a) {
+        <option [value]="a">{{ a }}</option>
+      }
+    </select>
+  </div>
+</section>

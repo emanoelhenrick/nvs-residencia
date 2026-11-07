@@ -1,42 +1,77 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Shell } from './layout/shell/shell';
-import { NewTicket } from './pages/new-ticket/new-ticket';
-import { Triage } from './pages/triage/triage';
-import { Attendance } from './pages/attendance/attendance';
-import { TicketList } from './pages/ticket-list/ticket-list';
+import { rolesFor } from './constants/navigation.constants';
+import { authGuard, guestGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./pages/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/auth/forgot-password/forgot-password').then((m) => m.ForgotPassword),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/auth/register/register').then((m) => m.Register),
+  },
+  {
     path: '',
-    component: Shell,
+    canActivate: [authGuard],
+    loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        component: Dashboard,
+        loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'list-tickets',
-        component: TicketList,
+        loadComponent: () =>
+          import('./pages/tickets/ticket-list/ticket-list').then((m) => m.TicketList),
       },
       {
         path: 'new-ticket',
-        component: NewTicket,
+        canActivate: [roleGuard],
+        data: { roles: rolesFor('/new-ticket') },
+        loadComponent: () =>
+          import('./pages/tickets/ticket-form/ticket-form').then((m) => m.TicketForm),
+      },
+      {
+        path: 'tickets/:id',
+        loadComponent: () =>
+          import('./pages/tickets/ticket-detail/ticket-detail').then((m) => m.TicketDetail),
       },
       {
         path: 'triage',
-        component: Triage,
+        canActivate: [roleGuard],
+        data: { roles: rolesFor('/triage') },
+        loadComponent: () => import('./pages/triage/triage').then((m) => m.Triage),
       },
       {
         path: 'attendance',
-        component: Attendance,
+        canActivate: [roleGuard],
+        data: { roles: rolesFor('/attendance') },
+        loadComponent: () => import('./pages/attendance/attendance').then((m) => m.Attendance),
       },
+      {
+        path: 'attendance/:id',
+        canActivate: [roleGuard],
+        data: { roles: rolesFor('/attendance') },
+        loadComponent: () =>
+          import('./pages/attendance/attendance-detail/attendance-detail').then(
+            (m) => m.AttendanceDetail,
+          ),
+      },
+      {
+        path: 'admin',
+        canActivate: [roleGuard],
+        data: { roles: rolesFor('/admin') },
+        loadComponent: () => import('./features/admin/admin').then((m) => m.Admin),
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     ],
   },
-  //   {
-  //     path: 'login',
-  //     loadComponent: () => import('./core/auth/login.page').then(m => m.LoginPage),
-  //   },
+  { path: '**', redirectTo: 'dashboard' },
 ];

@@ -1,0 +1,81 @@
+@if (ticket(); as t) {
+  <div class="page">
+    <nav class="crumb" aria-label="Trilha">
+      <a routerLink="/list-tickets">Lista de chamados</a> <span>›</span> <span>{{ t.id }}</span>
+    </nav>
+    <app-ticket-header [ticket]="t" [units]="units()" [now]="now()" />
+
+    <div class="stack" style="margin-top: 16px">
+      @if (banner(); as b) {
+        <app-ticket-banner [banner]="b" (action)="modal.set($event)" />
+      }
+
+      <app-context-card
+        [requester]="isParent() ? 'Registros de origem preservados nos chamados filhos' : requester()"
+        [where]="where()"
+      />
+
+      <app-ticket-tabs />
+
+      @if (isParent()) {
+        <app-incident-view [ticket]="t" />
+        <app-audit-history [entries]="t.history" />
+      } @else {
+        <div class="grid-main" id="resumo">
+          <app-ticket-summary
+            [ticket]="t"
+            [caps]="caps()!"
+            (action)="modal.set($event)"
+            (changed)="reload()"
+          />
+          <aside class="stack-sm">
+            <app-sla-panel [ticket]="t" [now]="now()" />
+            <app-side-actions
+              [ticket]="t"
+              [caps]="caps()!"
+              (cancel)="modal.set('cancel')"
+              (changed)="reload()"
+            />
+          </aside>
+        </div>
+        @if (caps()?.comment || caps()?.reassess || t.comments.length) {
+          <div class="grid-2" style="align-items: start">
+            <app-comments-card
+              [ticket]="t"
+              [editable]="!!caps()?.comment"
+              [placeholder]="
+                t.supplier
+                  ? 'Escreva uma atualização do chamado atribuído'
+                  : 'Escreva uma atualização para o atendimento'
+              "
+              (changed)="reload()"
+            />
+            @if (caps()?.reassess) {
+              <app-reassessment-card [ticket]="t" (changed)="reload()" />
+            }
+          </div>
+        }
+        <app-audit-history [entries]="t.history" />
+        <app-related-tickets [ticket]="t" />
+      }
+    </div>
+  </div>
+  @if (modal(); as m) {
+    <app-ticket-actions
+      [ticket]="t"
+      [kind]="m"
+      [now]="now()"
+      (closed)="modal.set(null)"
+      (done)="onActionDone()"
+    />
+  }
+} @else if (loading()) {
+  <div class="page"><p class="muted" role="status">Carregando chamado…</p></div>
+} @else {
+  <div class="page">
+    <app-empty-state icon="alert" title="Chamado não encontrado">
+      O protocolo {{ id() }} não existe ou não está disponível para o seu perfil.
+      <a actions routerLink="/list-tickets" class="btn btn-primary">Voltar à lista</a>
+    </app-empty-state>
+  </div>
+}

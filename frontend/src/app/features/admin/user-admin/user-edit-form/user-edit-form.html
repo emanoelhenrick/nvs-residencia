@@ -1,0 +1,40 @@
+<form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <h2 style="margin-bottom: 14px">Editar acesso · {{ user().name }}</h2>
+  <div class="field">
+    <label class="label" for="role">Perfil</label>
+    <select id="role" class="select" formControlName="role">
+      @for (r of roles; track r) {
+        <option [value]="r">{{ roleLabel[r] }}</option>
+      }
+    </select>
+  </div>
+  <div class="field">
+    <span class="label">Escopo de atendimento</span>
+    <div class="input locked row-between">
+      <span>{{ scopeOf(user()) }}</span
+      ><app-icon name="lock" [size]="16" />
+    </div>
+  </div>
+  <label class="check" style="margin: 0 0 14px 4px"
+    ><input type="checkbox" formControlName="active" /> Usuário ativo</label
+  >
+  <div class="field">
+    <label class="label" for="why">Justificativa da alteração *</label>
+    <textarea
+      id="why"
+      class="textarea"
+      formControlName="justification"
+      placeholder="Informe o motivo da mudança de acesso"
+      [class.invalid]="submitted() && form.controls.justification.invalid"
+    ></textarea>
+    @if (submitted() && form.controls.justification.invalid) {
+      <span class="field-error">Informe a justificativa (mín. 10 caracteres).</span>
+    }
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="!changed() || busy()">
+    Salvar alterações
+  </button>
+  @if (!changed()) {
+    <p class="footnote">Altere o perfil ou a situação para habilitar o salvamento.</p>
+  }
+</form>

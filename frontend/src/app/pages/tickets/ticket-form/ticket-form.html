@@ -1,0 +1,60 @@
+<div class="page">
+  <app-page-header
+    [title]="created() ? 'Chamado registrado' : 'Abrir chamado'"
+    subtitle="Registre o problema e suas evidências. Os campos obrigatórios estão marcados com *."
+  />
+
+  <div style="margin-bottom: 16px">
+    <app-context-card [requester]="requester()" [where]="where()" />
+  </div>
+
+  @if (created(); as t) {
+    <app-ticket-created [ticket]="t" (follow)="follow()" (another)="another()" />
+  } @else {
+    @if (showErrors()) {
+      <div style="margin-bottom: 16px">
+        <app-callout
+          variant="warning"
+          [title]="
+            'Revise ' +
+            errors().length +
+            (errors().length === 1 ? ' pendência' : ' pendências') +
+            ' antes de enviar'
+          "
+        >
+          Pendente: {{ errors().join(', ') }}. Os demais dados foram preservados.
+        </app-callout>
+      </div>
+    }
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="grid-main">
+        <app-problem-fields
+          [form]="form"
+          [submitted]="submitted()"
+          [categories]="categories"
+          [needsUnit]="needsUnit()"
+          [units]="units()"
+        />
+        <aside class="stack">
+          <app-evidence-card
+            [evidence]="evidence()"
+            [required]="evidenceRequired()"
+            [showError]="submitted() && evidenceMissing()"
+            (picked)="pick($event)"
+            (removed)="removeEvidence()"
+          />
+          <app-classification-hint />
+        </aside>
+      </div>
+      <div class="actions">
+        <span class="small muted">Confira o contexto e as evidências antes de enviar.</span>
+        <div class="row">
+          <button type="button" class="btn" (click)="back()">Voltar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="showErrors() || busy()">
+            Registrar chamado
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</div>

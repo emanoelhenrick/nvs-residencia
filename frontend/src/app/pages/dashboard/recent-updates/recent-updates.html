@@ -1,0 +1,12 @@
+<section class="card" style="margin-top: 16px">
+  <h2 style="margin-bottom: 14px">Atualizações recentes</h2>
+  @for (r of updates(); track r.h.id) {
+    <div class="upd">
+      <strong>{{ r.t.id }} · {{ r.h.to }}</strong>
+      <p>{{ firstName(r.h.author) }} · {{ time(r.h.at) }} — {{ r.h.text }}</p>
+      <a [routerLink]="['/tickets', r.t.id]" class="btn">Ver chamado</a>
+    </div>
+  } @empty {
+    <p class="muted">Sem atualizações recentes.</p>
+  }
+</section>

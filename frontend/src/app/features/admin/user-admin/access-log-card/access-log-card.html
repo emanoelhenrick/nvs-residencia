@@ -1,0 +1,10 @@
+<section class="card" style="margin-top: 16px">
+  <h2>Última alteração de acesso</h2>
+  @if (log(); as l) {
+    <p class="small muted" style="margin-top: 8px">{{ stamp(l.at) }} · {{ l.by }}</p>
+    <p class="strong" style="margin-top: 6px">{{ l.title }}</p>
+    <p>{{ l.text }}</p>
+  } @else {
+    <p class="muted" style="margin-top: 8px">Nenhuma alteração registrada.</p>
+  }
+</section>

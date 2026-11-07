@@ -1,0 +1,9 @@
+@let b = banner();
+<app-callout [variant]="b.variant" [title]="b.title">
+  {{ b.text }}
+  @if (b.action; as a) {
+    <button actions type="button" class="btn btn-sm" (click)="action.emit(a.kind)">
+      {{ a.label }}
+    </button>
+  }
+</app-callout>

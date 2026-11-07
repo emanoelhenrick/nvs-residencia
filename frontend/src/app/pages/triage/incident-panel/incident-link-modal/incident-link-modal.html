@@ -1,0 +1,45 @@
+@let g = group();
+<app-modal title="Confirmar vínculo ao incidente?" (closed)="closed.emit()">
+  <p class="muted" style="margin-bottom: 14px">
+    O vínculo não modifica automaticamente status, severidade, prioridade ou SLA dos filhos.
+  </p>
+  <div class="field">
+    <label class="label" for="par">Incidente pai</label>
+    <select id="par" class="select" [ngModel]="parentId()" (ngModelChange)="parentId.set($event)">
+      @for (p of parents(); track p.id) {
+        <option [value]="p.id">{{ p.id }} · {{ p.category }} (ilustrativo)</option>
+      }
+      <option value="novo">Criar novo incidente pai</option>
+    </select>
+  </div>
+  <label class="check" style="margin-bottom: 14px">
+    <input type="checkbox" [ngModel]="reviewed()" (ngModelChange)="reviewed.set($event)" />
+    Revisei as evidências dos {{ g.tickets.length }} registros
+  </label>
+  <div class="field" style="margin-bottom: 0">
+    <label class="label" for="vj">Justificativa do vínculo *</label>
+    <textarea
+      id="vj"
+      class="textarea"
+      [class.invalid]="touched() && !validText()"
+      placeholder="Informe o que aconteceu"
+      [ngModel]="text()"
+      (ngModelChange)="text.set($event)"
+    ></textarea>
+    @if (touched() && !validText()) {
+      <span class="field-error">Informe ao menos 10 caracteres.</span>
+    }
+  </div>
+  <p class="footnote warn">{{ footnote() }}<br />{{ who() }}</p>
+  <div footer style="display: contents">
+    <button type="button" class="btn" (click)="closed.emit()">Voltar</button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="!reviewed() || !parentId() || busy()"
+      (click)="confirm()"
+    >
+      Confirmar vínculo
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,68 @@
+@let t = ticket();
+@if (t.status === 'REOPENED' && t.reopening; as r) {
+  <app-action-record-card
+    title="Justificativa da reabertura"
+    [record]="r"
+    footnote="Resolução anterior não excluída. Manifestação antes do fechamento; a janela sem manifestação deixa de se aplicar a esta condição."
+  />
+}
+@if (t.status === 'CANCELLED' && t.cancellation; as c) {
+  <app-action-record-card
+    title="Justificativa do cancelamento"
+    [record]="c"
+    footnote="Ramo alternativo a partir de Em atendimento. Não inclui resolução, fechamento ou reabertura posteriores."
+  />
+}
+<section class="card">
+  @if (solved() && t.resolution; as s) {
+    <h2>Solução registrada</h2>
+    <p style="margin: 10px 0">{{ s.text }}</p>
+    <p class="strong small" style="margin-bottom: 14px">{{ s.by }} · {{ fmt(s.at) }}</p>
+  } @else {
+    <h2>Resumo do problema</h2>
+    <p style="margin: 10px 0 16px">{{ t.description }}</p>
+  }
+  <div class="grid-2">
+    <app-locked-field label="Categoria ilustrativa" [value]="t.category" />
+    @if (t.supplier; as s) {
+      <app-locked-field
+        label="Fornecedor atribuído"
+        [value]="s.org + ' · ' + s.contact + ' · ' + s.userId"
+      />
+    } @else if (t.errorCode && t.errorCode !== '—') {
+      <app-locked-field label="Código de erro" [value]="t.errorCode" />
+    }
+  </div>
+  @if (t.impact) {
+    <p class="footnote">
+      Impacto: {{ t.impact }}{{ t.affectsOthers ? ' Afeta outros dispositivos.' : '' }}
+    </p>
+  }
+
+  @if (showPending()) {
+    <app-pending-request
+      [ticket]="t"
+      [caps]="caps()"
+      (sendInfo)="action.emit('send-info')"
+      (laudo)="attachLaudo($event)"
+    />
+  }
+  @if (t.evidences.length) {
+    <div class="stack-sm" style="margin-top: 14px">
+      @for (e of shown(); track e.id) {
+        <app-evidence-box
+          [evidence]="e"
+          [buttonLabel]="e.kind === 'laudo' ? 'Ver laudo recebido' : 'Ver evidência'"
+        />
+      }
+    </div>
+  }
+  @if (initial(); as i) {
+    <p class="footnote">
+      Evidência inicial: {{ i.name }} · {{ i.sizeKb }} KB · {{ fmt(i.at) }}.
+      @if (t.evidences.length > 1) {
+        Evidências complementares foram recebidas depois.
+      }
+    </p>
+  }
+</section>

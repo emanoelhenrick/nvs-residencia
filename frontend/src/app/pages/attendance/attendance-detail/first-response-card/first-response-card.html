@@ -1,0 +1,10 @@
+<section class="card">
+  <h2 style="margin-bottom: 10px">
+    {{ response() ? 'Primeira resposta registrada' : 'Primeira resposta pendente' }}
+  </h2>
+  @if (response(); as fr) {
+    <p>{{ fr.by }} · {{ dt(fr.at) }} “{{ fr.text }}”</p>
+  } @else {
+    <p class="muted">Ainda não há resposta ao solicitante. O TMR conta desde a abertura.</p>
+  }
+</section>
