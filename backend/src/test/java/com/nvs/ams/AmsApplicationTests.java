@@ -7,8 +7,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.nvs.ams.config.SecurityConfig;
+import com.nvs.ams.config.JwtUtil;
 import com.nvs.ams.services.TicketService;
 import com.nvs.ams.services.SlaReportingService;
+import com.nvs.ams.services.auth.RegisterNewUserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import com.nvs.ams.infra.repositories.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,6 +31,18 @@ class AmsApplicationTests {
 
 	@MockitoBean
 	private SlaReportingService slaReportingService;
+
+	@MockitoBean
+	private UserRepository userRepository;
+
+	@MockitoBean
+	private JwtUtil jwtUtil;
+
+	@MockitoBean
+	private RegisterNewUserService registerNewUserService;
+
+	@MockitoBean
+	private PasswordEncoder passwordEncoder;
 
 	@Test
 	void healthEndpointReturnsUp() throws Exception {
