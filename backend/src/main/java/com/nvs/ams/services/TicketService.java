@@ -100,11 +100,21 @@ public class TicketService {
     public List<TicketResponse> list(Long userId) {//Lista os chamados. Solicitantes veem apenas os próprios;
         // os demais perfis veem todos.
         User user = findUser(userId);
-        List<Ticket> result = (user.getRole() == UserRole.REQUESTER)
-                ? tickets.findByRequesterIdOrderByOpenedAtDesc(user.getId())//Se for solicitante, lista apenas os chamados
-                // que ele abriu, do mais recente para o mais antigo.
-                : tickets.findAllByOrderByOpenedAtDesc();//Se for outro perfil, lista todos os chamados,
-        // também do mais recente para o mais antigo.
+        List<Ticket> result;
+        if (user.getRole() == UserRole.REQUESTER) {
+            result = tickets.findByRequesterIdOrderByOpenedAtDesc(user.getId());
+        } else if (user.getRole() == UserRole.SPECIALIST
+                || user.getRole() == UserRole.SUPPLIER) {
+            if (user.getTeam() == null) {
+                return List.of();
+            }
+            result = tickets.findAllByOrderByOpenedAtDesc().stream()
+                    .filter(ticket -> ticket.getAssignedTeam() != null
+                            && ticket.getAssignedTeam().getId().equals(user.getTeam().getId()))
+                    .toList();
+        } else {
+            result = tickets.findAllByOrderByOpenedAtDesc();
+        }
         return result.stream().map(this::toResponse).toList();
     }
 
@@ -116,10 +126,7 @@ public class TicketService {
                 .orElseThrow(() -> new ApiException(
                         HttpStatus.NOT_FOUND, "Chamado não encontrado"));
 
-        if (user.getRole() == UserRole.REQUESTER
-                && !ticket.getRequester().getId().equals(user.getId())) {//sou o usuário autorizado?
-            throw new ApiException(HttpStatus.FORBIDDEN, "Acesso negado");
-        }
+        ensureTicketAccess(user, ticket);
         return toResponse(ticket);
     }
 
@@ -128,10 +135,7 @@ public class TicketService {
         // em ordem cronológica.
         User user = findUser(userId);
         Ticket ticket = findTicket(ticketId);
-        if (user.getRole() == UserRole.REQUESTER
-                && !ticket.getRequester().getId().equals(user.getId())) {
-            throw new ApiException(HttpStatus.FORBIDDEN, "Acesso negado");
-        }
+        ensureTicketAccess(user, ticket);
         return events.findByTicketIdOrderByCreatedAtAsc(ticketId)//Busca todos os eventos daquele chamado, ordenados pela data de criação
                 .stream().map(TicketEventResponse::from).toList();
     }
@@ -141,12 +145,12 @@ public class TicketService {
                                       // e registra a classificação.
                                       SetTicketPriorityRequest request) {
         User user = findUser(userId);
+        Ticket ticket = findTicket(ticketId);//busca o chamado
+        ensureTicketAccess(user, ticket);
         if (!canClassify(user.getRole())) {
             throw new ApiException(HttpStatus.FORBIDDEN,
                     "Somente a equipe de suporte pode classificar chamados");
         }
-
-        Ticket ticket = findTicket(ticketId);//busca o chamado
         TicketPriority previousPriority = ticket.getPriority();//guarda a prioridade anterior
         ticket.setPriority(request.priority());//define uma nova
         ticket.setTmrAlertSent(false);//reinicia os alertas de SLA
@@ -174,6 +178,7 @@ public class TicketService {
                                          TicketResponseRequest request) {
         User user = findUser(userId);
         Ticket ticket = findTicket(ticketId);
+        ensureTicketAccess(user, ticket);
         if (ticket.getStatus() == TicketStatus.CANCELLED) {
             throw new ApiException(HttpStatus.CONFLICT,
                     "Não é possível responder a um chamado cancelado");
@@ -220,6 +225,7 @@ public class TicketService {
         User user = findUser(userId);
         requireSupportUser(user);
         Ticket ticket = findTicket(ticketId);
+        ensureTicketAccess(user, ticket);
         if (ticket.getResolvedAt() != null) {
             throw new ApiException(HttpStatus.CONFLICT,
                     "O chamado já foi resolvido");
@@ -242,6 +248,7 @@ public class TicketService {
         User user = findUser(userId);
         requireSupportUser(user);
         Ticket ticket = findTicket(ticketId);
+        ensureTicketAccess(user, ticket);
         TicketStatus nextStatus = request.status();
         if (!isOperationalStatus(nextStatus)) {
             throw new ApiException(HttpStatus.BAD_REQUEST,
@@ -278,6 +285,7 @@ public class TicketService {
         }
         if (user.getRole() != UserRole.REQUESTER) {
             requireSupportUser(user);
+            ensureTicketAccess(user, ticket);
         }
         reopenTicket(ticket, user);
         return toResponse(ticket);
@@ -289,6 +297,7 @@ public class TicketService {
         User user = findUser(userId);
         requireSupportUser(user);
         Ticket ticket = findTicket(ticketId);
+        ensureTicketAccess(user, ticket);
         Team team = teams.findById(request.teamId())
                 .orElseThrow(() -> new ApiException(
                         HttpStatus.BAD_REQUEST, "Equipe inválida"));
@@ -400,6 +409,21 @@ public class TicketService {
         if (user.getRole() == UserRole.REQUESTER) {
             throw new ApiException(HttpStatus.FORBIDDEN,
                     "Somente a equipe de suporte pode atender chamados");
+        }
+    }
+
+    private void ensureTicketAccess(User user, Ticket ticket) {
+        if (user.getRole() == UserRole.REQUESTER
+                && !ticket.getRequester().getId().equals(user.getId())) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "Acesso negado");
+        }
+
+        if ((user.getRole() == UserRole.SPECIALIST
+                || user.getRole() == UserRole.SUPPLIER)
+                && (user.getTeam() == null
+                || ticket.getAssignedTeam() == null
+                || !ticket.getAssignedTeam().getId().equals(user.getTeam().getId()))) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "Chamado fora do escopo da sua equipe");
         }
     }
 

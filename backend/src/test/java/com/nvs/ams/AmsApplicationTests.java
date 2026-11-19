@@ -13,6 +13,9 @@ import com.nvs.ams.services.SlaReportingService;
 import com.nvs.ams.services.auth.RegisterNewUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.nvs.ams.infra.repositories.UserRepository;
+import com.nvs.ams.infra.repositories.CategoryRepository;
+import com.nvs.ams.infra.repositories.LocationRepository;
+import com.nvs.ams.infra.repositories.TeamRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,6 +37,15 @@ class AmsApplicationTests {
 
 	@MockitoBean
 	private UserRepository userRepository;
+
+	@MockitoBean
+	private CategoryRepository categoryRepository;
+
+	@MockitoBean
+	private LocationRepository locationRepository;
+
+	@MockitoBean
+	private TeamRepository teamRepository;
 
 	@MockitoBean
 	private JwtUtil jwtUtil;
